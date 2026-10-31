@@ -1,0 +1,14 @@
+---
+description: hooks.ts — role-split component-local hooks (State / Vars / …)
+globs: "**/components/**/hooks.ts"
+alwaysApply: false
+---
+
+# hooks.ts
+
+- Component-local hooks. Prefer context for shared compound state.
+- **Role-split naming** (not one bag hook): `useXState`, `useXSize`, … where `X` is the part/component (e.g. `useDisclosureContentState`, `useDisclosureContentSize`). Add a role only when the part needs it — do not invent empty hooks.
+- Part `*.tsx` connects only — call these hooks from `hooks.ts`; no inline state/measure logic in tsx.
+- When a hook is public API for that component, export the named hook (and types) from the component `index.ts` — **not** a `Component.Hooks` bag. File name stays `hooks.ts`.
+- Cross-component lifecycle hooks (e.g. `usePresence`) belong in `src/package/ui/utils`, not under a component namespace.
+- Part-local pure helpers (e.g. `measureContentSize`) stay in that part’s `utils.ts`, not package utils, unless shared across components.

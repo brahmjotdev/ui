@@ -1,0 +1,18 @@
+---
+description: Current 0.x library scope — Button, Collapsible, usePresence util, docs; refuse drive-by components
+alwaysApply: true
+---
+
+# Library scope
+
+Current **0.x** scope: **Button**, **Collapsible**, docs pages for those, shared utils (incl. **`usePresence`**), rules/skills.
+
+Internal (no docs/CLI product): **Disclosure** — only as Spec Ready MD + Collapsible dependency; Content uses `@cerevialabs/ui/utils` `usePresence`.
+
+**Not in scope:** Presence compound component (deleted). Lifecycle lives in `src/package/ui/utils/use-presence.ts` (no util Spec MD).
+
+Out of scope unless PRODUCT.md changes: rest of INDEX backlog, real CLI binary, npm publish, Fallow.
+
+Semver: package is `0.x` until full INDEX + CLI + package are ready → then `1.0.0`. New shipped components / meaningful library changes bump **minor** in 0.x.
+
+Challenge scope creep. Do not scaffold new components outside Spec Ready MDs for the current 0.x scope.

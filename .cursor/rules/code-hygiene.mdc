@@ -1,0 +1,14 @@
+---
+description: Section comments, import order, libs vs direct styled deps, exports
+globs: src/package/**/*.{ts,tsx},src/cli/**/*.{ts,tsx},src/docs/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Code hygiene
+
+- Every file: section comments (`IMPORTS` / `TYPES` / `COMPONENT` / `EXPORTS` as used). No fluff inline comments.
+- `"use client"` first when needed → React → local near→far → third-party.
+- Headless behavior libs (Floating UI, etc.): only via `package/ui/libs/`.
+- CLI / docs-kit: import `cn`, `lucide-react` (and similar) **directly** — never through `libs/`.
+- One export: inline `export`. Multiple: `EXPORTS` section.
+- Prop order: `ref`, `render`, custom, native, `disabled`, `className`, `children`, `...props`. Same in the owned `mergeProps` bag; full bag/lock order → `component-tsx.mdc`. CLI JSX spread order → `new-cli-wrapper` skill.

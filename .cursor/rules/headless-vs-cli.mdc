@@ -1,0 +1,13 @@
+---
+description: Behavior in package; visuals in cli; docs kit in src/docs; app pages compose them
+globs: src/package/**/*,src/cli/**/*,src/docs/**/*,src/app/**/*
+alwaysApply: false
+---
+
+# Headless vs CLI vs docs
+
+- **package:** behavior, state, a11y, data attrs, `render`. No Tailwind variant systems.
+- **cli:** wraps headless; variants, sizes, icons, visual loading UI (`cn` / lucide direct).
+- **docs (`src/docs`):** docs-kit components for building documentation pages (`@/docs`). Footer may import `@/app/(content)/nav` for neighbors only.
+- **app:** website routes; compose docs-kit + CLI demos (or headless when documenting API).
+- CLI is **optional per component MD**. If the MD says headless-only, skip `src/cli` wrappers; docs demos use headless + page-local styles.

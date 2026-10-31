@@ -1,0 +1,27 @@
+---
+description: Durable chat decisions must land in rules/skills/specs in the same turn
+alwaysApply: true
+---
+
+# Find-or-write (this repo)
+
+When a reply establishes anything agents must remember later, **update the durable home in the same turn**. Chat alone is not the source of truth.
+
+## What counts (write if true)
+
+- User locks / confirms a convention, API, scope, workflow, anatomy, or status rule
+- Agent and user agree a parked default, rename, export shape, or “no X” product choice
+- Spec grilling / advisor answers that change a component MD DoR, public API, or build chunks
+- Corrections to wrong or incomplete rules, skills, or `specs/*`
+
+Skip write-only fluff: one-off debugging, ephemeral “try this,” or pure status (“done chunk 2”).
+
+## How
+
+1. **Find** the right home: `.cursor/rules/`, `.cursor/skills/`, `specs/*` (prefer an existing focused file).
+2. **Write/update** that file **before ending the turn** — same response as the verbal lock.
+3. Prefer editing an existing focused rule/spec over a new mega-doc.
+4. If code already contradicts the new convention and the fix is small, fix it in the same pass.
+5. Cross-update dependents when the change is referenced elsewhere (e.g. util/API rename → Collapsible / Disclosure specs + export rules).
+
+This is not optional “later docs.” Durable answer → durable files → next agents stay current.

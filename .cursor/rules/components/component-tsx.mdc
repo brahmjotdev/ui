@@ -1,0 +1,15 @@
+---
+description: Main component tsx — bind a11y/attrs/types via mergeProps and useRender
+globs: src/package/ui/components/**/*.tsx
+alwaysApply: false
+---
+
+# Component tsx
+
+For part/main files (not `context/**`, not `*.test.tsx`):
+
+- Bind with `useRender` + `mergeProps`.
+- Call `applyA11y` / `applyAttrs` once; do not re-list N params into old-style helpers.
+- Component prop order: `ref`, `render`, custom, native, `disabled`, `className`, `children`, `...props`.
+- `useRender({…})` key order: `defaultTagName`, `ref`, `render`, `state`, `enabled`, `props` (omit unused).
+- `mergeProps` bag order (later wins — JS/`mergeProps` behavior): owned bag → `applyA11y` / `applyAttrs` → `props` → optional locks that must beat rest (e.g. `{ disabled }` when the component MD says so). Do not invent locks without an MD contract.

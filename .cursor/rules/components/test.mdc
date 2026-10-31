@@ -1,0 +1,11 @@
+---
+description: Colocated headless Vitest files next to component tsx
+globs: "**/components/**/*.{test,spec}.{ts,tsx}"
+alwaysApply: false
+---
+
+# Component tests
+
+- Path: same folder as headless component (`button.test.tsx`).
+- Compound: one integration `collapsible.test.tsx` covering Root+Trigger+Content.
+- Behavior/a11y first. Feed break-skill findings into tests or Won’t-fix in the MD.

@@ -1,0 +1,304 @@
+/* 
+// ------------------------------------------------
+// IMPORTS
+// ------------------------------------------------
+*/
+
+@import "tailwindcss";
+
+/* 
+// ------------------------------------------------
+// TOKENS
+// ------------------------------------------------
+*/
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-sans-flex: var(--font-google-sans-flex);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-info: var(--info);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --z-index-button: 10;
+  --z-index-floating: 20;
+
+  --breakpoint-2xs: 20rem; /* 320px */
+  --breakpoint-xs: 30rem; /* 480px */
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 50rem; /* 800px */
+  --breakpoint-lg: 60rem; /* 960px */
+  --breakpoint-xl: 70rem; /* 1120px */
+  --breakpoint-2xl: 80rem; /* 1280px */
+  --breakpoint-3xl: 90rem; /* 1440px */
+  --breakpoint-4xl: 100rem; /* 1600px */
+  --breakpoint-5xl: 110rem; /* 1760px */
+  --breakpoint-6xl: 120rem; /* 1920px */
+  --breakpoint-7xl: 130rem; /* 2080px */
+  --breakpoint-8xl: 140rem; /* 2240px */
+}
+
+/* 
+// ------------------------------------------------
+// THEMES
+// used with next.js ThemeProvider
+// ------------------------------------------------
+*/
+
+:root {
+  --background: oklch(100% 0 0);
+  --foreground: oklch(10% 0 0);
+  --primary: oklch(10% 0 0);
+  --primary-foreground: oklch(100% 0 0);
+  --secondary: oklch(95% 0 0);
+  --secondary-foreground: oklch(10% 0 0);
+  --accent: oklch(70% 0 0);
+  --danger: oklch(63.7% 0.237 25.331);
+  --warning: oklch(76.9% 0.188 70.08);
+  --success: oklch(76.8% 0.233 130.85);
+  --info: oklch(62.3% 0.214 259.815);
+  --muted: oklch(65% 0 0);
+  --muted-foreground: oklch(60% 0 0);
+  --border: oklch(92.5% 0 0);
+  --ring: oklch(72.5% 0 0);
+
+  /* DARK MODE */
+  @media (prefers-color-scheme: dark) {
+    --background: oklch(20% 0 0);
+    --foreground: oklch(90% 0 0);
+    --primary: oklch(90% 0 0);
+    --primary-foreground: oklch(20% 0 0);
+    --secondary: oklch(25% 0 0);
+    --secondary-foreground: oklch(90% 0 0);
+    --accent: oklch(30% 0 0);
+    --danger: oklch(63.7% 0.237 25.331);
+    --warning: oklch(76.9% 0.188 70.08);
+    --success: oklch(76.8% 0.233 130.85);
+    --info: oklch(62.3% 0.214 259.815);
+    --muted: oklch(45% 0 0);
+    --muted-foreground: oklch(55% 0 0);
+    --border: oklch(30% 0 0);
+    --ring: oklch(60% 0 0);
+  }
+}
+
+/* 
+// ------------------------------------------------
+// BASE STYLES
+// ------------------------------------------------
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:animate-none;
+  }
+  html {
+    @apply h-full overflow-hidden scroll-smooth antialiased;
+  }
+  body {
+    @apply flex h-full flex-col overflow-hidden bg-background font-sans text-foreground;
+  }
+  /* TYPOGRAPHY */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+  .display {
+    @apply font-sans-flex text-6xl font-extrabold [font-variation-settings:'ROND'100];
+  }
+  h1 {
+    @apply text-3xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+  h3 {
+    @apply text-xl;
+  }
+  h4 {
+    @apply text-lg;
+  }
+  h5 {
+    @apply text-base;
+  }
+  h6 {
+    @apply text-sm;
+  }
+}
+
+/* 
+// ------------------------------------------------
+// DOCS API (docs-only; must live here so @apply sees theme)
+// ------------------------------------------------
+*/
+
+[data-docs-api] {
+  --docs-api-name: oklch(70.5% 0.183 55.934);
+  --docs-api-name-event: oklch(62.7% 0.265 303.9);
+  --docs-api-part-name: oklch(62.3% 0.214 259.815);
+  --docs-api-part-tag: oklch(64.8% 0.15 142);
+
+  --docs-api-type-union: oklch(63.7% 0.237 25.331);
+  --docs-api-type-keyword: oklch(62.3% 0.214 259.815);
+  --docs-api-type-function: oklch(63.7% 0.237 25.331);
+  --docs-api-type-paren: oklch(70.5% 0.183 55.934);
+  --docs-api-type-string: oklch(80.9% 0.105 251.813);
+  --docs-api-type-literal: var(--muted-foreground);
+  --docs-api-type-qualified: oklch(60.6% 0.25 292.717);
+  --docs-api-type-punctuation: var(--muted-foreground);
+
+  @media (prefers-color-scheme: dark) {
+    --docs-api-name: oklch(75% 0.15 55);
+    --docs-api-name-event: oklch(70% 0.2 303);
+    --docs-api-type-union: oklch(70% 0.18 25);
+    --docs-api-type-keyword: oklch(70% 0.15 260);
+    --docs-api-type-function: oklch(70% 0.18 25);
+    --docs-api-type-paren: oklch(75% 0.15 55);
+    --docs-api-type-qualified: oklch(70% 0.18 292);
+  }
+}
+
+.docs-api-name {
+  @apply font-medium text-(--docs-api-name);
+}
+.docs-api-name-event {
+  @apply font-medium text-(--docs-api-name-event);
+}
+
+.docs-api-type-union {
+  @apply text-(--docs-api-type-union);
+}
+.docs-api-type-keyword {
+  @apply text-(--docs-api-type-keyword);
+}
+.docs-api-type-function {
+  @apply text-(--docs-api-type-function);
+}
+.docs-api-type-paren {
+  @apply text-(--docs-api-type-paren);
+}
+.docs-api-type-string {
+  @apply text-(--docs-api-type-string);
+}
+.docs-api-type-literal {
+  @apply text-(--docs-api-type-literal);
+}
+.docs-api-type-qualified {
+  @apply text-(--docs-api-type-qualified);
+}
+.docs-api-type-punctuation {
+  @apply text-(--docs-api-type-punctuation);
+}
+
+.docs-api-part-name {
+  @apply text-(--docs-api-part-name);
+}
+.docs-api-part-tag {
+  @apply text-(--docs-api-part-tag);
+}
+
+.docs-api-root {
+  @apply flex flex-col gap-12;
+}
+
+.docs-api-part {
+  @apply flex flex-col gap-8 font-mono text-xs;
+}
+
+.docs-api-part-heading {
+  @apply flex gap-8 text-xl font-semibold text-muted-foreground;
+}
+
+.docs-api-part-tag-wrap {
+  @apply text-lg;
+}
+
+.docs-api-card {
+  @apply rounded-2xl border bg-background px-6 py-5 shadow-xs;
+}
+
+.docs-api-card-header {
+  @apply mb-2 grid grid-cols-3 gap-8 text-sm font-semibold;
+}
+
+.docs-api-prop-grid {
+  @apply grid grid-cols-3 gap-8;
+}
+
+.docs-api-row {
+  @apply border-b last:border-b-0;
+}
+
+.docs-api-row-flat {
+  @apply grid grid-cols-3 gap-8 border-b py-2 last:border-b-0;
+}
+
+.docs-api-row-child {
+  @apply grid grid-cols-3 text-xs;
+}
+
+.docs-api-trigger {
+  @apply grid h-fit grid-cols-3 items-start justify-items-start gap-8 rounded-sm px-0 text-left text-xs font-normal whitespace-normal;
+}
+
+.docs-api-description {
+  @apply col-span-2 font-sans text-muted-foreground;
+}
+
+.docs-api-span-2 {
+  @apply col-span-2;
+}
+
+.docs-api-panel {
+  @apply my-4 flex flex-col gap-2 border-l py-2 pl-4;
+}
+
+.docs-api-panel-compact {
+  @apply my-2 border-l py-2 pl-4;
+}
+
+.docs-api-panel-detail {
+  @apply my-4 border-l py-2 pl-4;
+}
+
+.docs-api-detail {
+  @apply flex flex-col gap-2 font-sans text-sm text-muted-foreground;
+}
+
+.docs-api-detail p {
+  @apply leading-relaxed;
+}
+
+.docs-api-detail ul {
+  @apply flex flex-col gap-1;
+}
+
+.docs-api-detail li {
+  @apply ml-4 list-disc;
+}
+
+.docs-api-detail code {
+  @apply rounded bg-muted px-1 py-0.5 font-mono text-xs;
+}
+
+.docs-api-required {
+  @apply flex gap-4;
+}
+

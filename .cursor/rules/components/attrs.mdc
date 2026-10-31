@@ -1,0 +1,11 @@
+---
+description: attrs.ts — identity + state keys; applyAttrs util
+globs: "**/components/**/attrs.ts"
+alwaysApply: false
+---
+
+# attrs.ts
+
+- Export identity string + `*AttrStates` const array (boolean keys).
+- Do not take N boolean params. Use `applyAttrs(identity, states, values)`.
+- Builds `data-slot`, `data-<identity>`, and `data-<state>` via `dataAttrs`.

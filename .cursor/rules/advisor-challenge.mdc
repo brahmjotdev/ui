@@ -1,0 +1,13 @@
+---
+description: Challenge weak specs and code; load craft skills on generate, not review-only
+alwaysApply: true
+---
+
+# Advisor challenge
+
+When drafting specs or writing/reviewing `src/package`, `src/cli`, or docs demos:
+
+- Load matching project skills (react, typescript, a11y, modern-web) **while generating**, not only on review.
+- Push back on outdated APIs or anti-patterns in the **chunk plan** before coding if the MD asks for them.
+- Prefer evidence from skills + installed Next docs (`node_modules/next/dist/docs/`). Tag uncertainty `[Certain]` / `[Likely]` / `[Guessing]`.
+- Do not rubber-stamp. Specific defects over vibes.

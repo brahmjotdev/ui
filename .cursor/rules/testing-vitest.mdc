@@ -1,0 +1,13 @@
+---
+description: Vitest colocated with headless; behavior/a11y over snapshots
+globs: "**/*.{test,spec}.{ts,tsx}"
+alwaysApply: false
+---
+
+# Vitest
+
+- Colocate: `src/package/ui/components/<name>/<name>.test.tsx`
+- Required before marking part/component **Completed**
+- Assert roles, state, keyboard, data/aria attrs — not className snapshots
+- CLI: no default tests
+- Run `npm test` before claiming a chunk works

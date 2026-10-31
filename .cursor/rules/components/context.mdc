@@ -1,0 +1,18 @@
+---
+description: Compound context/ folder — Provider, types, shared hooks (not under root/)
+globs: "**/components/**/context/**"
+alwaysApply: false
+---
+
+# context/ (compound only)
+
+Sibling folder next to `root/`, `trigger/`, etc. — **not** nested inside `root/`.
+
+Required (owning Provider): `types.ts`, `context.tsx`, `hooks.ts`, `index.ts`
+
+**Facade alias** (thin rename over another compound’s context): Spec Ready MD may omit `context.tsx` and only ship `types.ts` / `hooks.ts` / `index.ts` that re-export or alias the underlying context.
+
+- `context.tsx`: createContext + **Provider** component (state, `useId`, callbacks — no visuals)
+- `hooks.ts`: `useXContext` that throws outside Provider; shared hooks only
+- Part-only hooks live in that part’s `hooks.ts`, not here
+- Root composes Provider for the public API; do not force consumers to mount Provider separately

@@ -1,0 +1,19 @@
+---
+description: package vs cli vs docs vs app boundaries; libs only for headless build deps
+alwaysApply: true
+---
+
+# Architecture
+
+- Headless: `src/package/ui` (`@cerevialabs/ui/*`)
+- Styled: `src/cli` (`cn` / `lucide-react` **direct** imports)
+- Docs kit: `src/docs` (helpers for docs pages — not the product library; import `@/docs`)
+- Docs site: `src/app` (routes; compose `docs` + demos)
+- Utils: `src/package/ui/utils`
+- **`libs/`:** only libraries used to **build headless behavior** (e.g. Floating UI). Re-export there; headless components never import those npm packages directly.
+- **Not in `libs/`:** `cn`, `lucide-react`, styled/docs-kit deps
+- Allowed site coupling: `src/docs` footer → `@/app/(content)/nav` for neighbors only
+
+Forbidden: `package` importing `cli`, `app`, or `docs`.
+
+Canonical path: `src/package/ui/components/<name>/`. See `specs/ARCHITECTURE.md`.
