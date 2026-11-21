@@ -1,0 +1,17 @@
+---
+description: attrs.ts — identity + state keys; applyAttrs util
+globs: "**/components/**/attrs.ts"
+alwaysApply: false
+---
+
+# attrs.ts
+
+- Prefer `applyAttrs(identity, states, values, options?)` — do not take N boolean params.
+- Define `*AttrStates` (boolean keys) next to the attrs helper when using `applyAttrs`.
+- Export `*AttrStates` only when another module imports it (part `*.tsx`, sibling attrs, tests). Otherwise keep it file-local.
+- **Identity:** `data-slot` is the component identity. Do **not** emit `data-<slot>` / `data-button`-style boolean markers.
+- **Singles:** `applyAttrs("button", …)` → `data-slot` + state attrs.
+- **Compounds:** `applyAttrs("scroll-area", …, { part: "root" | "content" | … })`:
+  - `part: "root"` → `data-slot="<component>"` + `data-<component>-part="root"`
+  - other parts → only `data-<component>-part="<part>"` (no `data-slot`)
+- Internal/state-only: `dataAttrs(…, { statesOnly: true })` (no slot / part).

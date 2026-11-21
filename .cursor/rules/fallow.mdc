@@ -1,0 +1,14 @@
+---
+description: Local Fallow analysis conventions for this library repo
+alwaysApply: false
+globs:
+  - .fallowrc.json
+---
+
+# Fallow
+
+- Config: `.fallowrc.json` (not `fallow.json`). Run: `npm run fallow`.
+- Library barrels are `entry` roots (`package` components/utils, `cli`, `docs`) so intentional public exports are not “unused.”
+- `@tailwindcss/turbopack` stays in `ignoreDependencies` — referenced as a Turbopack loader string in `next.config.ts`, not via import.
+- Do not delete AttrStates / public prop types / util re-exports just to silence Fallow; unexport only true file-locals.
+- CI fail-on-Fallow stays out of scope until PRODUCT.md says otherwise.

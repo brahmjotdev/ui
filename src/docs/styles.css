@@ -1,0 +1,197 @@
+/* 
+// ------------------------------------------------
+// DOCS KIT
+// @reference theme.css (not globals) so @apply works
+// without recursing through globals → docs import
+// ------------------------------------------------
+*/
+
+@reference "../styles/theme.css";
+
+/* 
+// ------------------------------------------------
+// LAYOUT
+// ------------------------------------------------
+*/
+
+[data-docs-page] {
+  @apply flex min-h-full flex-col gap-16 p-16;
+}
+
+[data-docs-header] {
+  @apply flex flex-col gap-1;
+
+  h1 {
+    @apply font-bold;
+  }
+  p {
+    @apply text-muted-foreground;
+  }
+}
+
+[data-docs-body] {
+  @apply flex flex-1 flex-col gap-8;
+
+  [data-docs-section] {
+    @apply flex flex-col gap-8;
+  }
+}
+
+[data-docs-footer] {
+  @apply flex items-center justify-between border-t pt-16;
+
+  [data-link] {
+    @apply flex flex-col rounded-xl border px-4 py-3;
+
+    [data-link-label] {
+      @apply text-xs text-muted-foreground;
+    }
+
+    [data-link-title] {
+      @apply text-sm font-medium text-foreground;
+    }
+  }
+}
+
+/* 
+// ------------------------------------------------
+// DEMO
+// ------------------------------------------------
+*/
+
+[data-docs-demo] {
+  @apply rounded-2xl border;
+}
+
+[data-demo-preview] {
+  @apply flex min-h-64 p-12;
+}
+
+/* 
+// ------------------------------------------------
+// API LAYOUT + SYNTAX THEME
+// ------------------------------------------------
+*/
+
+[data-docs-api] {
+  @apply flex flex-col gap-12;
+}
+
+[data-api-part] {
+  @apply flex flex-col gap-8 font-mono;
+
+  [data-api-part-heading] {
+    @apply flex items-center gap-8 text-xl font-semibold text-muted-foreground;
+  }
+
+  [data-api-part-name] {
+    @apply text-blue-500 dark:text-blue-400;
+  }
+
+  [data-api-part-tag-wrap] {
+    @apply text-lg;
+
+    [data-api-part-tag] {
+      @apply font-medium text-lime-600 dark:text-lime-500;
+    }
+  }
+}
+
+[data-api-card] {
+  @apply rounded-2xl border bg-background px-6 py-5 font-mono shadow-xs;
+}
+
+[data-api-card-header] {
+  @apply mb-2 font-semibold;
+}
+
+[data-api-content] {
+  @apply flex flex-col;
+}
+
+[data-api-row] {
+  @apply border-b last:border-b-0;
+}
+
+[data-api-trigger] {
+  @apply flex justify-between rounded-sm pl-0 font-mono text-xs data-open:bg-secondary/50 data-open:pl-4;
+}
+
+[data-api-chevron] {
+  @apply size-4 text-muted-foreground transition-all duration-200 ease-in-out group-data-open:rotate-180;
+}
+
+[data-api-row-content] {
+  @apply my-4 flex flex-col gap-2 border-l px-4 py-3 text-xs;
+}
+
+[data-api-content-wrap] {
+  @apply grid grid-cols-4 gap-4;
+}
+
+[data-api-content-label] {
+  @apply font-semibold;
+}
+
+[data-api-content-value] {
+  @apply col-span-3;
+}
+
+/* 
+// ------------------------------------------------
+// API TOKENS
+// ------------------------------------------------
+*/
+
+[data-api-name="prop"] {
+  @apply text-orange-500 dark:text-orange-400;
+}
+
+[data-api-name="event"] {
+  @apply text-purple-500 dark:text-purple-400;
+}
+
+[data-token="keyword"],
+[data-token="string"],
+[data-token="literal"] {
+  @apply text-blue-500 dark:text-blue-400;
+}
+
+[data-token="union"],
+[data-token="function"] {
+  @apply text-red-500 dark:text-red-400;
+}
+
+[data-token="paren"] {
+  @apply text-orange-500 dark:text-orange-400;
+}
+
+[data-token="qualified"] {
+  @apply text-purple-500 dark:text-purple-400;
+}
+
+[data-token="punctuation"] {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+/* 
+// ------------------------------------------------
+// API DETAIL
+// ------------------------------------------------
+*/
+
+[data-api-detail] {
+  @apply font-sans text-sm text-foreground/75;
+
+  code {
+    @apply rounded-md bg-secondary/50 px-1 py-0.5 text-xs text-pink-500 dark:text-pink-400;
+  }
+}
+
+[data-api-attr-list] {
+  @apply m-0 list-disc space-y-2 pl-4 font-mono text-xs;
+
+  code {
+    @apply bg-transparent p-0 text-orange-500 dark:text-orange-400;
+  }
+}

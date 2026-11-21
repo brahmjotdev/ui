@@ -1,0 +1,13 @@
+---
+description: types.ts — props order; interfaces for ComponentProps / named exports
+globs: "**/components/**/types.ts"
+alwaysApply: false
+---
+
+# types.ts
+
+- Extend `UseRenderComponentProps<"tag">` when using `useRender`.
+- Custom props listed in the same order used in the component and `mergeProps`: `ref`, `render`, custom, native, `disabled`, `className`, `children`, then rest. See `component-tsx.mdc` for `mergeProps` bag order / locks.
+- **Interface** only when adding members. If props are just the host tag props, use `export type XProps = UseRenderComponentProps<"tag">` (empty `interface extends` is lint-illegal).
+- Types are the source of truth; `index.ts` re-exports them as `ButtonProps` / `DisclosureRootProps`. Consumers may also use `ComponentProps<typeof …>`.
+- One export: inline. Multiple: declare then `EXPORTS` section (`export type { … }`).

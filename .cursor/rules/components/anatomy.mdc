@@ -1,0 +1,23 @@
+---
+description: Headless component file set — single flat folder vs compound part + context folders
+globs: src/package/ui/components/**/*
+alwaysApply: false
+---
+
+# Component anatomy
+
+Path: `src/package/ui/components/<name>/` (groups nest: `charts/bar/`).
+
+## Single
+
+Required: `attrs.ts`, `types.ts`, `<name>.tsx`, `index.ts`, `<name>.test.tsx`  
+Optional: `a11y.ts` (omit when the part has no ARIA of its own), `utils.ts`, `hooks.ts`, `events.ts`
+
+## Compound
+
+- Sibling folders: `context/`, `root/`, each part (`trigger/`, `content/`, …), top-level `index.ts` + `*.test.tsx`
+- **`context/`** (not under `root/`): `types.ts`, `context.tsx` (Provider), `hooks.ts`, `index.ts` — facade alias may omit `context.tsx` when Spec Ready MD says so
+- Each part: same anatomy files as single (`attrs`, `types`, part tsx, `index`; `a11y` when needed; optional part-local `hooks.ts` / `events.ts` / `utils.ts`)
+- Part `*.tsx` connects only — build hooks in that part’s `hooks.ts` (or shared `context/hooks.ts`); no inline hook/state logic in tsx
+- Public Root composes Provider — consumers use `<X.Root>`, not a separate Provider wrap
+- Follow sibling rules per file type

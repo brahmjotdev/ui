@@ -1,0 +1,18 @@
+---
+description: index.ts — public exports; ComponentProps for prop types (no namespaces)
+globs: "**/components/**/index.ts"
+alwaysApply: false
+---
+
+# index.ts
+
+- Export parts (`Component` or `Component.Root` / `.Trigger` / …) from `index.ts`.
+- **No TypeScript `namespace`** (`@typescript-eslint/no-namespace`; types are not runtime object fields).
+- **Prop types (library convention):**
+  - Prefer consumer path: `ComponentProps<typeof Button>` / `ComponentProps<typeof Disclosure.Root>` (React + `@types/react`).
+  - Also export named interfaces for authors/extends: `ButtonProps`, `DisclosureRootProps`, …
+- Context: named `useXContext` + `XContextValue` type export.
+- Component-owned state hooks: named exports; never a `Hooks` bag pretending to hold types.
+- Cross-component lifecycle (e.g. `usePresence`) lives in `src/package/ui/utils`.
+- One export: inline. Multiple: `EXPORTS` section.
+- Do not re-export internals (raw a11y specs) unless part of public API.

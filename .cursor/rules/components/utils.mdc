@@ -1,0 +1,10 @@
+---
+description: Component-local utils.ts — pure helpers only
+globs: "**/components/**/utils.ts"
+alwaysApply: false
+---
+
+# utils.ts (component-local)
+
+- Pure functions for this component only.
+- Shared cross-component helpers belong in `src/package/ui/utils/`.

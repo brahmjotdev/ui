@@ -1,0 +1,12 @@
+---
+description: a11y.ts — declarative specs or context functions; no DOM
+globs: "**/components/**/a11y.ts"
+alwaysApply: false
+---
+
+# a11y.ts
+
+- Pure ARIA/keyboard helpers. No DOM, no React components.
+- Prefer declarative maps + `applyA11y(spec, state)` for boolean states.
+- Use functions when values need context (`open`, ids).
+- Export `*A11ySpec` or named helpers; consume once from the part tsx.

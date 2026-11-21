@@ -1,0 +1,15 @@
+---
+description: Spec-first build — Spec Ready MD required; chunked builds; Completed rollup; rival/break once
+alwaysApply: true
+---
+
+# Spec-first workflow
+
+1. No `src/package` / `src/cli` code for a **component** until its MD is **Spec Ready** (DoR checked).
+2. Compound: freeze **all** parts in the MD before coding Root.
+3. Primary prompt: user points at MD → chunked plan → **one chunk per turn** → verify → wait.
+4. Mid-build API changes: update the MD **before** code.
+5. Part statuses in the component MD. Component **Completed** only when every part is Completed.
+6. **Rival + break once** after component Completed → In Review → then Shipped (or user waiver recorded in MD).
+7. Do not run rival/break per chunk.
+8. **No Spec Draft MDs for package utils** (`src/package/ui/utils`). Utils = TypeScript + colocated tests; consumer component MDs name imports. Do not create one-off util specs.

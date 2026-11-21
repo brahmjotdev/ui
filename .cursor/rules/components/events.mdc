@@ -1,0 +1,11 @@
+---
+description: events.ts — event handlers for pointer/keyboard button-like parts
+globs: "**/components/**/events.ts"
+alwaysApply: false
+---
+
+# events.ts
+
+- Optional. Extract event handlers for button-like / interactive parts (click, keydown).
+- Keep factories pure where possible; `hooks.ts` closes over context and wires handlers into the part return.
+- Part `*.tsx` imports hooks only — does not define handlers inline.

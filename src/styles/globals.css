@@ -1,0 +1,103 @@
+/* 
+// ------------------------------------------------
+// IMPORTS
+// ------------------------------------------------
+*/
+
+@import "./theme.css";
+@import "../docs/styles.css";
+
+/* 
+// ------------------------------------------------
+// THEMES
+// used with next.js ThemeProvider
+// ------------------------------------------------
+*/
+
+:root {
+  --background: oklch(100% 0 0);
+  --foreground: oklch(10% 0 0);
+  --primary: oklch(10% 0 0);
+  --primary-foreground: oklch(100% 0 0);
+  --secondary: oklch(95% 0 0);
+  --secondary-foreground: oklch(10% 0 0);
+  --accent: oklch(70% 0 0);
+  --danger: oklch(63.7% 0.237 25.331);
+  --warning: oklch(76.9% 0.188 70.08);
+  --success: oklch(76.8% 0.233 130.85);
+  --info: oklch(62.3% 0.214 259.815);
+  --muted: oklch(65% 0 0);
+  --muted-foreground: oklch(60% 0 0);
+  --border: oklch(92.5% 0 0);
+  --ring: oklch(72.5% 0 0);
+
+  /* DARK MODE */
+  @media (prefers-color-scheme: dark) {
+    --background: oklch(20% 0 0);
+    --foreground: oklch(90% 0 0);
+    --primary: oklch(90% 0 0);
+    --primary-foreground: oklch(20% 0 0);
+    --secondary: oklch(25% 0 0);
+    --secondary-foreground: oklch(90% 0 0);
+    --accent: oklch(30% 0 0);
+    --danger: oklch(63.7% 0.237 25.331);
+    --warning: oklch(76.9% 0.188 70.08);
+    --success: oklch(76.8% 0.233 130.85);
+    --info: oklch(62.3% 0.214 259.815);
+    --muted: oklch(45% 0 0);
+    --muted-foreground: oklch(55% 0 0);
+    --border: oklch(30% 0 0);
+    --ring: oklch(60% 0 0);
+  }
+}
+
+/* 
+// ------------------------------------------------
+// BASE STYLES
+// ------------------------------------------------
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:animate-none;
+  }
+  html {
+    @apply h-full overflow-hidden antialiased;
+  }
+  body {
+    @apply flex h-full flex-col overflow-hidden bg-background font-sans text-foreground;
+  }
+  svg {
+    @apply shrink-0;
+  }
+  /* TYPOGRAPHY */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+  .display {
+    @apply font-sans-flex text-6xl font-extrabold [font-variation-settings:'ROND'100];
+  }
+  h1 {
+    @apply text-3xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+  h3 {
+    @apply text-xl;
+  }
+  h4 {
+    @apply text-lg;
+  }
+  h5 {
+    @apply text-base;
+  }
+  h6 {
+    @apply text-sm;
+  }
+}
