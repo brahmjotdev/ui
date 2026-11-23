@@ -7,7 +7,7 @@ alwaysApply: true
 
 1. No `src/package` / `src/cli` code for a **component** until its MD is **Spec Ready** (DoR checked).
 2. Compound: freeze **all** parts in the MD before coding Root.
-3. Primary prompt: user points at MD → chunked plan → **one chunk per turn** → verify → wait.
+3. Primary prompt: user points at MD → chunked plan → **one chunk per turn** → verify → wait. All chunks for that component stay on `component/<name>` (see `branch-per-change`).
 4. Mid-build API changes: update the MD **before** code.
 5. Part statuses in the component MD. Component **Completed** only when every part is Completed.
 6. **Rival + break once** after component Completed → In Review → then Shipped (or user waiver recorded in MD).
