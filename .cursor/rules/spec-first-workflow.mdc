@@ -1,5 +1,5 @@
 ---
-description: Spec-first build — Spec Ready MD required; chunked builds; Completed rollup; rival/break once
+description: Spec-first build — Spec Ready before code; rival and break before Shipped; later changes re-reviewed and tested before main
 alwaysApply: true
 ---
 
@@ -10,6 +10,8 @@ alwaysApply: true
 3. Primary prompt: user points at MD → chunked plan → **one chunk per turn** → verify → wait. All chunks for that component stay on `component/<name>` (see `branch-per-change`).
 4. Mid-build API changes: update the MD **before** code.
 5. Part statuses in the component MD. Component **Completed** only when every part is Completed.
-6. **Rival + break once** after component Completed → In Review → then Shipped (or user waiver recorded in MD).
+6. **Rival + break once** after component Completed → set **In Review** → record the review log → then **Shipped**. Do not mark Shipped, and do not merge that component to `main`, while status is still Completed. A waiver belongs in the MD.
 7. Do not run rival/break per chunk.
-8. **No Spec Draft MDs for package utils** (`src/package/ui/utils`). Utils = TypeScript + colocated tests; consumer component MDs name imports. Do not create one-off util specs.
+8. A later change to a Shipped component stays off `main` until `npm test` and `npm run typecheck` pass and that change is reviewed. Re-run rival + break when it changes public API, a11y, or behavior, and record the result in the component MD. A docs-only or comment-only edit still does not merge while those commands fail.
+9. Ship only that change’s files. Spec or code for another component does not ride along.
+10. **No Spec Draft MDs for package utils** (`src/package/ui/utils`). Utils = TypeScript + colocated tests; consumer component MDs name imports. Do not create one-off util specs.
