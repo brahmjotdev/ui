@@ -1,0 +1,14 @@
+---
+description: Before a component spec is Spec Ready, compare basic and nice-to-have features with other libraries
+alwaysApply: true
+---
+
+# Library pass
+
+When drafting or grilling a component spec, check current docs before the API freezes.
+
+- Read **Base UI** and **Radix** for that component. If one has no such component, say so. Also read one of **React Aria**, **Ark UI**, or **MUI**.
+- In the component MD, record a short library pass: basics this spec will ship, nice-to-haves it will not, and why.
+- Cite the doc. Do not invent a prop, default, or keyboard behavior.
+- A feature that fights a locked decision or a current platform guide stays out. Name it in the pass.
+- This pass is for the spec. The rival scorecard still runs once, after the component is Completed.

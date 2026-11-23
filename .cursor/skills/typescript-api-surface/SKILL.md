@@ -17,3 +17,4 @@ description: >-
 5. Keep prop order: `ref`, `render`, custom, native, `disabled`, `className`, `children`, `...props`.
 6. Prefer `UseRenderComponentProps<"tag">` for polymorphic hosts.
 7. Challenge `any`, loose index signatures, and exporting internal helpers as public API.
+8. Mode-only props are a discriminated union (see `types.mdc`). The default branch may omit the discriminant. The other branch requires its literal and omits props that mode does not read. Do not collapse those shapes into `A | B` on one shared prop.

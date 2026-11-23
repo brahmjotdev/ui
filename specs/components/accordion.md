@@ -41,8 +41,8 @@
 
 | Part     | Responsibility                                                            | Status      | Detail |
 | -------- | ------------------------------------------------------------------------- | ----------- | ------ |
-| context/ | Group value, `exclusive`, root `disabled`, `toggle`; not a public part    | Not Started |        |
-| Root     | Group host. Owns `value` / `defaultValue` / `exclusive` / `disabled`      | Not Started |        |
+| context/ | Group value, `type`, root `disabled`, `toggle`; not a public part         | Not Started |        |
+| Root     | Group host. Owns `type` / `value` / `defaultValue` / `disabled`           | Not Started |        |
 | Item     | One Disclosure root. Required `value`. Item `disabled`                    | Not Started |        |
 | Header   | Heading wrapper around Trigger. Default `h3`. No toggle of its own        | Not Started |        |
 | Trigger  | Disclosure trigger + accordion attrs. Default `button`                    | Not Started |        |
@@ -58,13 +58,12 @@ Item context aliases Disclosure (`useAccordionItemContext`). Group context is se
 
 ## Behavior
 
-- **Uncontrolled:** `defaultValue: string[]`, default `[]`. Root stores the open list.
-- **Controlled:** `value` + `onValueChange(value: string[])`.
-- **`exclusive`:** default `false`. Several items may stay open, and the last open item may close.
-  - `false`: toggle adds or removes that item’s `value`.
-  - `true`: opening sets the list to `[value]`. Closing the open item sets `[]`.
-- **Uncontrolled + `exclusive` + `defaultValue` with more than one entry:** keep the first entry and drop the rest at init.
-- **Controlled + `exclusive` + a list of several values:** render every listed item open. `exclusive` changes the next toggle (replace with one, or clear). Do not clamp a controlled list during render.
+- **`type`:** `"multiple"` (default) or `"single"`. This is the public discriminant. There is no `exclusive` prop and no `string | string[]` value.
+  - **`multiple`:** `value` / `defaultValue` are `string[]`. `defaultValue` defaults to `[]`. Toggle adds or removes that item. `onValueChange(value: string[])`.
+  - **`single`:** `value` / `defaultValue` are `string`. `defaultValue` defaults to `""` (none open). Opening sets that item’s `value`. Closing the open item sets `""`. `onValueChange(value: string)`.
+- Several items may stay open only when `type` is `multiple`. A single accordion can still close its open item. Forcing one item to stay open is out of scope, so there is no `collapsible` prop.
+- Item `value` is a non-empty string. `""` is reserved for a closed single accordion.
+- The root may store a list internally. The public props and callback stay on the `type` branch. A single accordion does not accept or emit `string[]`.
 - **`disabled` on Root:** every trigger is non-interactive. Open list frozen.
 - **`disabled` on Item:** that trigger is non-interactive. Other items still toggle. Root `disabled` wins over the item.
 - Trigger click / Enter / Space toggles that item (native button).
@@ -82,18 +81,36 @@ Item context aliases Disclosure (`useAccordionItemContext`). Group context is se
 
 ### Root
 
-| Prop          | Type                      | Default | Notes                          |
-| ------------- | ------------------------- | ------- | ------------------------------ |
-| ref           | Ref                       | —       |                                |
-| render        | useRender                 | —       | Default `div`                  |
-| value         | string[]                  | —       | Controlled open list           |
-| defaultValue  | string[]                  | `[]`    | Uncontrolled                   |
-| onValueChange | (value: string[]) => void | —       |                                |
-| exclusive     | boolean                   | `false` | One open at a time when `true` |
-| disabled      | boolean                   | `false` |                                |
-| className     | string                    | —       |                                |
-| children      | ReactNode                 | —       | Items                          |
-| …props        | div attrs                 | —       |                                |
+Shared on both modes: `ref`, `render`, `disabled` (default `false`), `className`, `children`, and other `div` attrs.
+
+`AccordionRootProps` is the union. `type` defaults to `"multiple"` when omitted.
+
+| Mode     | Prop          | Type                      | Default      | Notes                           |
+| -------- | ------------- | ------------------------- | ------------ | ------------------------------- |
+| multiple | type          | `"multiple"`              | `"multiple"` | Optional on this branch         |
+| multiple | value         | string[]                  | —            | Controlled open list            |
+| multiple | defaultValue  | string[]                  | `[]`         | Uncontrolled                    |
+| multiple | onValueChange | (value: string[]) => void | —            |                                 |
+| single   | type          | `"single"`                | —            | Required literal                |
+| single   | value         | string                    | —            | Controlled. `""` means closed   |
+| single   | defaultValue  | string                    | `""`         | Uncontrolled. `""` means closed |
+| single   | onValueChange | (value: string) => void   | —            |                                 |
+
+```ts
+type AccordionRootProps =
+  | ({
+      type?: "multiple";
+      value?: string[];
+      defaultValue?: string[];
+      onValueChange?: (value: string[]) => void;
+    } & AccordionRootSharedProps)
+  | ({
+      type: "single";
+      value?: string;
+      defaultValue?: string;
+      onValueChange?: (value: string) => void;
+    } & AccordionRootSharedProps);
+```
 
 ### Item
 
@@ -157,7 +174,7 @@ Export: `Accordion.Root`, `.Item`, `.Header`, `.Trigger`, `.Content` + named pro
 
 Compound convention via `applyAttrs(..., { part })`:
 
-- Root: `data-slot="accordion"`, `data-accordion-part="root"`, `data-disabled`, `data-exclusive` when `exclusive`
+- Root: `data-slot="accordion"`, `data-accordion-part="root"`, `data-disabled`, `data-type="single" | "multiple"`
 - Item: `data-accordion-part="item"`, `data-open`, `data-disabled`
 - Header: `data-accordion-part="header"`
 - Trigger: `data-accordion-part="trigger"`, `data-open`, `data-disabled`
@@ -169,11 +186,11 @@ Disclosure still sets its own behavioral attrs on the item hosts. Accordion adds
 
 ## Headless vs CLI
 
-| Concern             | Headless | CLI                                           |
-| ------------------- | -------- | --------------------------------------------- |
-| Open state / a11y   | Yes      | Wrap parts                                    |
-| Chevron / animation | No       | Chevron on Trigger; height from the size vars |
-| Exclusive default   | `false`  | Demo stays non-exclusive                      |
+| Concern             | Headless     | CLI                                           |
+| ------------------- | ------------ | --------------------------------------------- |
+| Open state / a11y   | Yes          | Wrap parts                                    |
+| Chevron / animation | No           | Chevron on Trigger; height from the size vars |
+| Type default        | `"multiple"` | Demo stays `multiple`                         |
 
 No CLI variant or size props.
 
@@ -207,6 +224,31 @@ src/app/(content)/components/accordion/
 
 ---
 
+## Library pass
+
+Checked 2026-11-23: [Base UI Accordion](https://base-ui.com/react/components/accordion), [Radix Accordion](https://www.radix-ui.com/primitives/docs/components/accordion), [React Aria DisclosureGroup](https://react-aria.adobe.com/DisclosureGroup), [Ark UI Accordion](https://ark-ui.com/docs/components/accordion). [Certain]
+
+**Basics this spec already ships**
+
+- Root, Item, Header, Trigger, Content. Radix and Base UI use the same stack (Base UI names the panel `Panel`).
+- One-open vs many-open, with a different value type per mode. Radix uses `type: "single" | "multiple"`. Base UI uses `multiple` plus `Value[]` for both. React Aria uses `allowsMultipleExpanded` and a set of keys. This spec keeps the Radix discriminant so a single accordion cannot be given `string[]`.
+- Controlled and uncontrolled value, root and item `disabled`, `keepMounted` (Radix `forceMount`, Ark `unmountOnExit`), content size CSS variables, `render` instead of `asChild`.
+- Tab, Enter, and Space only. Base UI marks `loopFocus` and `orientation` deprecated because the APG removed roving focus ([aria-practices#3434](https://github.com/w3c/aria-practices/pull/3434)). Radix still documents Arrow, Home, and End. This spec follows the updated guidance.
+
+**Left out**
+
+- `collapsible={false}` (Radix and Ark default). That forces one item to stay open. This spec lets a single accordion close.
+- Horizontal `orientation`, `dir`, and Arrow-key moves. Base UI no longer uses them for keyboard behavior. Layout direction is CSS and inherited `dir`.
+- A headless indicator part (Ark `ItemIndicator`). The chevron stays on the CLI.
+- `onFocusChange`, `lazyMount` as a second mount API, and a MUI-style accordion that is only a single panel with its own `expanded`. Collapsible already covers one panel. Mount policy is `keepMounted` plus `usePresence`.
+
+**Nice-to-have, not in this build**
+
+- `hiddenUntilFound` (Base UI, on Root or Panel). Find-in-page can open a closed panel, and the panel stays mounted. It does not fit a thin Disclosure facade: closed content must stay in the DOM and must not be `inert` or `display: none`. Safari still treats the attribute as `hidden`. The known limit below stands until a later spec change.
+- `data-index` (Base UI) and a Root-level `keepMounted` default. Content already accepts `keepMounted`. Add the index attr if a demo needs it.
+
+---
+
 ## Out of scope
 
 - Forcing one item to stay open
@@ -225,17 +267,17 @@ src/app/(content)/components/accordion/
 
 _(none)_
 
-Parked: several items may stay open; `exclusive` defaults `false`; the last item may close; value is always `string[]`; Header is an optional `h3`; keyboard is Tab + Enter/Space; find-in-page for closed panels needs `keepMounted`.
+Parked: `type` defaults to `"multiple"` (`string[]`); `type: "single"` uses `string` and `""` when closed; the last single item may close; Header is an optional `h3`; keyboard is Tab + Enter/Space; find-in-page for closed panels needs `keepMounted`.
 
 ---
 
 ## Known limits / adversarial cases
 
-| Case                                                                                   | Status    | Test / Won’t-fix                                                                                                               |
-| -------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Closed content is absent from find-in-page unless `keepMounted`                        | Won’t-fix | Disclosure unmounts. `inert` while mounted closed. `hidden="until-found"` is out of scope (Safari still treats it as `hidden`) |
-| Duplicate item `value`                                                                 | Won’t-fix | Misuse. Those items share one open bit                                                                                         |
-| Controlled `exclusive` list with several values stays multi-open until the next toggle | Document  | Root does not rewrite controlled state during render                                                                           |
+| Case                                                            | Status    | Test / Won’t-fix                                                                                                               |
+| --------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Closed content is absent from find-in-page unless `keepMounted` | Won’t-fix | Disclosure unmounts. `inert` while mounted closed. `hidden="until-found"` is out of scope (Safari still treats it as `hidden`) |
+| Duplicate item `value`                                          | Won’t-fix | Misuse. Those items share one open bit                                                                                         |
+| Single `value` / `defaultValue` of `""` means no item is open   | Document  | Item ids are non-empty. There is no separate closed sentinel                                                                   |
 
 (Rival + break fill the rest at Completed.)
 
