@@ -166,7 +166,8 @@ function useScrollAreaProviderValue({
   type = "hover",
   scrollHideDelay = 600,
 }: ScrollAreaProviderValueParams): ScrollAreaContextValue {
-  const contentId = useId();
+  const autoContentId = useId();
+  const [contentId, setContentId] = useState(autoContentId);
   const contentRef = useRef<HTMLElement | null>(null);
   const [dir, setDir] = useState<ScrollAreaDir>("ltr");
   const [hovering, setHovering] = useState(false);
@@ -192,7 +193,9 @@ function useScrollAreaProviderValue({
   return {
     type,
     scrollHideDelay,
+    autoContentId,
     contentId,
+    setContentId,
     contentRef,
     dir,
     setDir,

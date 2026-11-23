@@ -4,14 +4,10 @@
 
 "use client";
 
-import {
-  useRef,
-  type CSSProperties,
-  type PointerEvent,
-  type Ref,
-} from "react";
+import { useRef, type CSSProperties, type PointerEvent, type Ref } from "react";
 
 import { useScrollAreaContext } from "../context";
+import { dragScrollRatio, thumbTranslatePercent } from "../context/utils";
 import { useScrollAreaScrollbarContext } from "../scrollbar";
 import { scrollAreaThumbAttrs } from "./attrs";
 
@@ -43,8 +39,12 @@ function useScrollAreaThumbState(ref?: Ref<HTMLElement>) {
     orientation === "vertical" ? ctx.thumbSizeY : ctx.thumbSizeX;
   const scrollRatio =
     orientation === "vertical" ? ctx.scrollRatioY : ctx.scrollRatioX;
-  const translatePercent =
-    thumbSize <= 0 ? 0 : scrollRatio * (1 / thumbSize - 1) * 100;
+  const translatePercent = thumbTranslatePercent(
+    orientation,
+    scrollRatio,
+    thumbSize,
+    ctx.dir,
+  );
   const sizePercent = `${thumbSize * 100}%`;
 
   const style: CSSProperties =
@@ -86,8 +86,16 @@ function useScrollAreaThumbState(ref?: Ref<HTMLElement>) {
     const thumbPx = thumbSize * trackSize;
     const movable = Math.max(1, trackSize - thumbPx);
     const current = orientation === "vertical" ? event.clientY : event.clientX;
-    const delta = (current - drag.startPos) / movable;
-    ctx.scrollToRatio(orientation, drag.startRatio + delta);
+    ctx.scrollToRatio(
+      orientation,
+      dragScrollRatio(
+        drag.startRatio,
+        current - drag.startPos,
+        movable,
+        orientation,
+        ctx.dir,
+      ),
+    );
   }
 
   function onPointerUp(event: PointerEvent<HTMLElement>) {
