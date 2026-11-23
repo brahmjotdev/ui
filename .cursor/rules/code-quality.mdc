@@ -1,0 +1,12 @@
+---
+description: Deterministic quality gates for this library
+alwaysApply: true
+---
+
+# Quality gates
+
+- Package manager is npm (`package-lock.json`). Verification commands are `npm run typecheck` and `npm test`.
+- Headless `src/package/ui` authors no Tailwind classes and no CSS. Forwarded `className` and `style` props stay.
+- Layer imports are enforced by ESLint `import/no-restricted-paths` in `eslint.config.mjs`. Allowed directions stay in `architecture.mdc`.
+- Section comments required by `code-hygiene.mdc` stay. Do not add workaround commentary.
+- The stop hook re-runs typecheck and tests after a turn that changes `ts` / `tsx` / `mts` / `css`. Fallow stays local (`npm run fallow`), not a turn gate.

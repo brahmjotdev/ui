@@ -11,4 +11,4 @@ alwaysApply: false
 - Required before marking part/component **Completed**
 - Assert roles, state, keyboard, data/aria attrs — not className snapshots
 - CLI: no default tests
-- Run `npm test` before claiming a chunk works
+- Run `npm run typecheck` and `npm test` before claiming a chunk works
