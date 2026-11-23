@@ -1,0 +1,34 @@
+---
+description: Every ship has a subject and a body that says what we did
+alwaysApply: true
+---
+
+# Commit messages
+
+Every commit that ships a change has a subject and a body. A subject-only message is incomplete.
+
+## Subject
+
+One line. Imperative. Name the change that shipped.
+
+## Body
+
+A blank line after the subject, then what we did. Write the body every time, including a one-file change.
+
+The body can be rich. Use whatever shape fits the change:
+
+- Bullets for a list of work
+- A short paragraph when the change is one thread
+- Quotes when the exact name, copy, or message matters
+
+Keep each item about the work in that commit. Leave out files that are not in it.
+
+## Example
+
+```
+Add layer boundaries to ESLint.
+
+- Reject imports from src/cli, src/docs, and src/app inside src/package
+- Allow src/docs to import src/app only at (content)/nav.ts
+- "import/no-restricted-paths" is the rule that enforces it
+```

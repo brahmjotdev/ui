@@ -1,0 +1,35 @@
+---
+description: One short-lived branch per change; park it before starting another; main is the only long-lived branch
+alwaysApply: true
+---
+
+# Branch per change
+
+`main` is the only long-lived branch. Each change gets its own short-lived branch, cut from current `main`. Delete that branch after it merges to `main`.
+
+## Prefixes
+
+- `component/<name>` — one catalog component from first code through Shipped: its spec updates, headless, CLI, and docs. Every chunk stays on this branch. Disclosure uses `component/disclosure`.
+- `spec/<name>` — the component MD only, through Spec Ready. No `src/package` or `src/cli` code.
+- `fix/<slug>` — a defect in something already on `main`, including a util bug. A util that exists only for a component in progress stays on that `component/` branch.
+- `refactor/<slug>` — a behavior-preserving change to something already on `main`.
+- `chore/<slug>` — rules, skills, tooling, deps, and docs-site chrome that is not part of a component.
+
+Skip `develop` and `release/*` while the package is unpublished `0.x`.
+
+## What “ship” means
+
+- **Ship to the branch:** create the branch if needed and commit only that change’s files. The message follows `commit-messages`: a subject plus a body. Work lives here until it is ready for `main`.
+- **Ship to `main`:** merge only when the user says the change is good, or a component is Shipped (or review is waived in the MD). Then delete the branch.
+- The next change to the same area is a new branch (`fix/button-focus-ring`). Leave the old branch deleted.
+- Push only when the user asks.
+
+## Task switch
+
+When a change is still unshipped and the user starts another (docs rewrite in progress, then “new component” or “fix a bug”):
+
+1. Park the current change first. Put it on its prefix branch and commit it there. Leave `main` untouched.
+2. Start the new change on a new branch cut from `main`.
+3. One change per branch. The parked change is a commit on its branch, not loose edits on `main` or on the next branch.
+
+Finish the park before writing any file for the new change.
