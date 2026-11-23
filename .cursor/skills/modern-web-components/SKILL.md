@@ -11,7 +11,7 @@ description: >-
 
 ## Instructions
 
-1. Before inventing markup/CSS patterns, consult modern web guidance (user/plugin `modern-web-guidance` skill if present).
+1. Before inventing markup/CSS patterns, consult modern web guidance. The plugin skill is already installed. Look up a guide with `npx -y modern-web-guidance@latest search "<query>"`, then `npx -y modern-web-guidance@latest retrieve "<id>"`.
 2. Prefer semantic HTML, progressive enhancement, and accessible defaults over div soup.
 3. Challenge outdated patterns (e.g. click-only without keyboard, missing labels, layout hacks).
 4. For this library: visuals live in `src/cli`; behavior in `src/package/ui`.
