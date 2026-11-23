@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/format-after-edit.mjs"
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/stop-verify.mjs",
+        "loop_limit": 2,
+        "timeout": 180
+      }
+    ]
+  }
+}
