@@ -141,6 +141,51 @@ describe("ScrollArea", () => {
     ).toBeTruthy();
   });
 
+  it("points scrollbar aria-controls at a consumer content id", async () => {
+    const { container } = render(
+      <ScrollArea.Root style={{ width: 120, height: 120 }}>
+        <ScrollArea.Content id="notes" style={{ width: 120, height: 120 }}>
+          <div style={{ width: 240, height: 240 }}>Scrollable body</div>
+        </ScrollArea.Content>
+        <ScrollArea.Scrollbar orientation="vertical">
+          <ScrollArea.Thumb />
+        </ScrollArea.Scrollbar>
+      </ScrollArea.Root>,
+    );
+    const content = await revealOverflow(container);
+    expect(content).toHaveAttribute("id", "notes");
+    expect(verticalScrollbar(container)).toHaveAttribute(
+      "aria-controls",
+      "notes",
+    );
+  });
+
+  it("places the horizontal thumb on the inline start in rtl", async () => {
+    const { container } = render(
+      <ScrollArea.Root
+        type="always"
+        style={{ direction: "rtl", width: 120, height: 120 }}
+      >
+        <ScrollArea.Content style={{ width: 120, height: 120 }}>
+          <div style={{ width: 240, height: 240 }}>Scrollable body</div>
+        </ScrollArea.Content>
+        <ScrollArea.Scrollbar orientation="horizontal">
+          <ScrollArea.Thumb />
+        </ScrollArea.Scrollbar>
+      </ScrollArea.Root>,
+    );
+    const content = screen.getByText("Scrollable body").parentElement!;
+    mockOverflow(content);
+    fireEvent.scroll(content);
+
+    await waitFor(() => {
+      const thumb = container.querySelector(
+        '[data-scroll-area-part="thumb"]',
+      ) as HTMLElement | null;
+      expect(thumb?.style.transform).toBe("translate3d(100%, 0, 0)");
+    });
+  });
+
   it("exposes scrollbar a11y pointing at content", async () => {
     const { container } = render(<BasicScrollArea />);
     const content = await revealOverflow(container);
@@ -329,6 +374,7 @@ describe("ScrollArea", () => {
       const scrollbar = verticalScrollbar(container);
       expect(scrollbar).toBeTruthy();
       expect(scrollbar).toHaveAttribute("data-state", "closed");
+      expect(scrollbar).toHaveAttribute("inert");
     });
   });
 });

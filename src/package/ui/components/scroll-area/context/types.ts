@@ -2,12 +2,7 @@
 // IMPORTS
 // ------------------------------------------------
 
-import type {
-  Dispatch,
-  ReactNode,
-  RefObject,
-  SetStateAction,
-} from "react";
+import type { Dispatch, ReactNode, RefObject, SetStateAction } from "react";
 
 // ------------------------------------------------
 // TYPES
@@ -34,7 +29,9 @@ interface ScrollMetrics {
 interface ScrollAreaContextValue extends ScrollMetrics {
   type: ScrollAreaType;
   scrollHideDelay: number;
+  autoContentId: string;
   contentId: string;
+  setContentId: Dispatch<SetStateAction<string>>;
   contentRef: RefObject<HTMLElement | null>;
   dir: ScrollAreaDir;
   setDir: Dispatch<SetStateAction<ScrollAreaDir>>;

@@ -4,15 +4,10 @@
 
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  type PointerEvent,
-  type Ref,
-} from "react";
+import { useEffect, useRef, type PointerEvent, type Ref } from "react";
 
-import { readScrollMetrics } from "../content/utils";
 import { useScrollAreaContext } from "../context";
+import { pageDirectionAt } from "../context/utils";
 import { scrollAreaScrollbarA11y } from "./a11y";
 import { scrollAreaScrollbarAttrs } from "./attrs";
 import type { ScrollAreaScrollbarProps } from "./types";
@@ -56,30 +51,19 @@ function useScrollAreaScrollbarState({
     clientY: number,
   ): 1 | -1 | null {
     const track = localRef.current;
-    const content = ctx.contentRef.current;
-    if (!track || !content) return null;
+    if (!track) return null;
 
     const rect = track.getBoundingClientRect();
-    const metrics = readScrollMetrics(content, ctx.dir);
+    const vertical = orientation === "vertical";
 
-    if (orientation === "vertical") {
-      const thumbStart =
-        metrics.scrollRatioY *
-        (rect.height - metrics.thumbSizeY * rect.height);
-      const thumbEnd = thumbStart + metrics.thumbSizeY * rect.height;
-      const y = clientY - rect.top;
-      if (y < thumbStart) return -1;
-      if (y > thumbEnd) return 1;
-      return null;
-    }
-
-    const thumbStart =
-      metrics.scrollRatioX * (rect.width - metrics.thumbSizeX * rect.width);
-    const thumbEnd = thumbStart + metrics.thumbSizeX * rect.width;
-    const x = clientX - rect.left;
-    if (x < thumbStart) return -1;
-    if (x > thumbEnd) return 1;
-    return null;
+    return pageDirectionAt(
+      orientation,
+      ctx.dir,
+      vertical ? clientY - rect.top : clientX - rect.left,
+      vertical ? rect.height : rect.width,
+      vertical ? ctx.scrollRatioY : ctx.scrollRatioX,
+      vertical ? ctx.thumbSizeY : ctx.thumbSizeX,
+    );
   }
 
   return {

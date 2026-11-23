@@ -7,9 +7,12 @@ import { describe, expect, it } from "vitest";
 import type { ScrollMetrics } from "./types";
 import {
   cornerShown,
+  dragScrollRatio,
+  pageDirectionAt,
   pageScrollOn,
   scrollToRatioOn,
   scrollbarShown,
+  thumbTranslatePercent,
 } from "./utils";
 
 // ------------------------------------------------
@@ -102,6 +105,25 @@ describe("scroll commands", () => {
 
     expect(element.scrollTop).toBe(50);
     expect(element.scrollLeft).toBe(-100);
+  });
+});
+
+describe("thumb geometry", () => {
+  it("parks an rtl horizontal thumb on the inline start", () => {
+    expect(thumbTranslatePercent("horizontal", 0, 0.5, "ltr")).toBe(0);
+    expect(thumbTranslatePercent("horizontal", 0, 0.5, "rtl")).toBe(100);
+    expect(thumbTranslatePercent("vertical", 0, 0.5, "rtl")).toBe(0);
+  });
+
+  it("drags an rtl horizontal thumb toward the inline start when the pointer moves right", () => {
+    expect(dragScrollRatio(0.5, 10, 100, "horizontal", "ltr")).toBeCloseTo(0.6);
+    expect(dragScrollRatio(0.5, 10, 100, "horizontal", "rtl")).toBeCloseTo(0.4);
+  });
+
+  it("pages toward the pointer on an rtl horizontal track", () => {
+    expect(pageDirectionAt("horizontal", "ltr", 90, 100, 0, 0.5)).toBe(1);
+    expect(pageDirectionAt("horizontal", "rtl", 10, 100, 0, 0.5)).toBe(1);
+    expect(pageDirectionAt("horizontal", "rtl", 90, 100, 0, 0.5)).toBeNull();
   });
 });
 
