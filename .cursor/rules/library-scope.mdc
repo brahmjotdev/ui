@@ -1,15 +1,15 @@
 ---
-description: Current 0.x library scope — Button, Collapsible, Scroll Area, usePresence util, docs; refuse drive-by components
+description: Current 0.x library scope — Button, Collapsible, Scroll Area, Accordion (spec), usePresence util, docs; refuse drive-by components
 alwaysApply: true
 ---
 
 # Library scope
 
-Current **0.x** scope: **Button**, **Collapsible**, **Scroll Area** — each headless + styled CLI + docs — shared utils (incl. **`usePresence`**), rules/skills.
+Current **0.x** scope: **Button**, **Collapsible**, **Scroll Area**, and **Accordion** (Spec Ready — no `src/package` or `src/cli` code until its component branch starts) — each headless + styled CLI + docs — shared utils (incl. **`usePresence`**), rules/skills.
 
 Catalog components ship **both** headless and styled unless that component’s spec says headless-only or styled-only.
 
-Internal (no docs/CLI product): **Disclosure** — only as Spec Ready MD + Collapsible dependency; Content uses `@cerevialabs/ui/utils` `usePresence`.
+Internal (no docs/CLI product): **Disclosure** — Collapsible and Accordion items compose it; Content uses `@cerevialabs/ui/utils` `usePresence`. Accordion group policy stays on Accordion, not Disclosure.
 
 **Not in scope:** Presence compound component (deleted). Lifecycle lives in `src/package/ui/utils/use-presence.ts` (no util Spec MD).
 

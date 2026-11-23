@@ -24,15 +24,16 @@ Teams need a broad, accessible React component set that is headless by default a
 - Catalog components ship **both** headless and styled unless that component’s spec says headless-only or styled-only
 - Ship docs pages in this Next.js app for those components
 - Spec-first workflow enforced: no component code without a Spec Ready MD
-- Internal **Disclosure** supports Collapsible (and later Accordion); not a public catalog product
+- Internal **Disclosure** supports Collapsible and Accordion; not a public catalog product
 
 ## Current / 0.x in scope
 
-- Headless: Button, Collapsible, Scroll Area
+- Headless: Button, Collapsible, Scroll Area, Accordion
 - Util: `usePresence` (+ helpers) under `src/package/ui/utils` — used by Disclosure and later Floating/overlays
-- Internal: Disclosure (composed by Collapsible; not docs/CLI product)
-- CLI styled wrappers for Button, Collapsible, and Scroll Area
-- Docs site pages for Button, Collapsible, Scroll Area (`src/app` + docs-kit under `src/docs`)
+- Internal: Disclosure (composed by Collapsible and Accordion items; not docs/CLI product). Accordion root owns the group; each item is a Disclosure facade
+- CLI styled wrappers for Button, Collapsible, Scroll Area, and Accordion
+- Docs site pages for Button, Collapsible, Scroll Area, and Accordion (`src/app` + docs-kit under `src/docs`)
+- Accordion is Spec Ready on `spec/accordion`. No `src/package` or `src/cli` code until that branch is the active component build
 - Shared utils (`mergeProps`, `useRender`, `dataAttrs`, `applyA11y`, `applyAttrs`, `useControllableState`, `usePresence`, …)
 - Vitest colocated with headless components and utils
 - Agent rules + skills for build-from-MD workflow
