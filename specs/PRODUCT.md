@@ -12,14 +12,14 @@ Teams need a broad, accessible React component set that is headless by default a
 
 ## Versioning
 
-- **Current package:** `0.3.1` — Button, Collapsible, and Scroll Area (each headless + styled), docs, and agent rules. Not a major release.
+- **Current package:** `0.4.0` — Button, Collapsible, Scroll Area, and Accordion (each headless + styled), docs, and agent rules. Not a major release.
 - **While building the catalog (0.x):** each shipped component or meaningful library change → **minor** bump (`0.4.0`, `0.5.0`, …). Patches for fixes within a slice.
 - **`1.0.0` only when:** the full component catalog in [INDEX.md](./components/INDEX.md) has package + CLI ready. That is the first major “ready” release.
 - Do not call the Button/Collapsible milestone v1 / 1.0 — that label is reserved for full-catalog readiness.
 
 ## Success (current / 0.x slice)
 
-- Ship **Button** (single), **Collapsible** (compound), and **Scroll Area** (compound) as headless package components and styled CLI wrappers
+- Ship **Button** (single), **Collapsible** (compound), **Scroll Area** (compound), and **Accordion** (compound) as headless package components and styled CLI wrappers
 - Ship shared utils including **`usePresence`** (lifecycle; not a catalog component)
 - Catalog components ship **both** headless and styled unless that component’s spec says headless-only or styled-only
 - Ship docs pages in this Next.js app for those components
@@ -33,7 +33,7 @@ Teams need a broad, accessible React component set that is headless by default a
 - Internal: Disclosure (composed by Collapsible and Accordion items; not docs/CLI product). Accordion root owns the group; each item is a Disclosure facade
 - CLI styled wrappers for Button, Collapsible, Scroll Area, and Accordion
 - Docs site pages for Button, Collapsible, Scroll Area, and Accordion (`src/app` + docs-kit under `src/docs`)
-- Accordion is Spec Ready on `spec/accordion`. No `src/package` or `src/cli` code until that branch is the active component build
+- Accordion is Shipped: headless package, CLI wrapper, and docs page
 - Shared utils (`mergeProps`, `useRender`, `dataAttrs`, `applyA11y`, `applyAttrs`, `useControllableState`, `usePresence`, …)
 - Vitest colocated with headless components and utils
 - Agent rules + skills for build-from-MD workflow

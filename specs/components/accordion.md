@@ -2,7 +2,7 @@
 
 | Field    | Value                                     |
 | -------- | ----------------------------------------- |
-| Status   | Spec Ready                                |
+| Status   | Shipped                                   |
 | Pattern  | `compound`                                |
 | Spec     | `specs/components/accordion.md`           |
 | Headless | `src/package/ui/components/accordion/`    |
@@ -39,14 +39,14 @@
 
 ## Parts
 
-| Part     | Responsibility                                                            | Status      | Detail |
-| -------- | ------------------------------------------------------------------------- | ----------- | ------ |
-| context/ | Group value, `type`, root `disabled`, `toggle`; not a public part         | Not Started |        |
-| Root     | Group host. Owns `type` / `value` / `defaultValue` / `disabled`           | Not Started |        |
-| Item     | One Disclosure root. Required `value`. Item `disabled`                    | Not Started |        |
-| Header   | Heading wrapper around Trigger. Default `h3`. No toggle of its own        | Not Started |        |
-| Trigger  | Disclosure trigger + accordion attrs. Default `button`                    | Not Started |        |
-| Content  | Disclosure content. Injects `--accordion-content-*`. Public `keepMounted` | Not Started |        |
+| Part     | Responsibility                                                            | Status    | Detail  |
+| -------- | ------------------------------------------------------------------------- | --------- | ------- |
+| context/ | Group value, `type`, root `disabled`, `toggle`; not a public part         | Completed | Chunk 1 |
+| Root     | Group host. Owns `type` / `value` / `defaultValue` / `disabled`           | Completed | Chunk 1 |
+| Item     | One Disclosure root. Required `value`. Item `disabled`                    | Completed | Chunk 2 |
+| Header   | Heading wrapper around Trigger. Default `h3`. No toggle of its own        | Completed | Chunk 3 |
+| Trigger  | Disclosure trigger + accordion attrs. Default `button`                    | Completed | Chunk 3 |
+| Content  | Disclosure content. Injects `--accordion-content-*`. Public `keepMounted` | Completed | Chunk 4 |
 
 **Rollup:** Component Completed only when every part is Completed.
 
@@ -278,6 +278,10 @@ Parked: `type` defaults to `"multiple"` (`string[]`); `type: "single"` uses `str
 | Closed content is absent from find-in-page unless `keepMounted` | Won’t-fix | Disclosure unmounts. `inert` while mounted closed. `hidden="until-found"` is out of scope (Safari still treats it as `hidden`) |
 | Duplicate item `value`                                          | Won’t-fix | Misuse. Those items share one open bit                                                                                         |
 | Single `value` / `defaultValue` of `""` means no item is open   | Document  | Item ids are non-empty. There is no separate closed sentinel                                                                   |
+| Changing `type` after mount                                     | Won’t-fix | The group list is created for the mode mounted first                                                                           |
+| Styled Trigger replaces `render`                                | Won’t-fix | The CLI trigger owns the chevron button                                                                                        |
+| Controlled value without `onValueChange` does not update        | Fixed     | `accordion.test.tsx`                                                                                                           |
+| Root or item `disabled` leaves an open panel in place           | Fixed     | `accordion.test.tsx`                                                                                                           |
 
 (Rival + break fill the rest at Completed.)
 
@@ -285,9 +289,9 @@ Parked: `type` defaults to `"multiple"` (`string[]`); `type: "single"` uses `str
 
 ## Review log
 
-| Date | Rival | Break | Verdict |
-| ---- | ----- | ----- | ------- |
-|      |       |       |         |
+| Date       | Rival                                                                                                                                                                                                                                                                                                                                                                              | Break                                                                                                                                                                                                                                                                                         | Verdict |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 2026-11-23 | Base UI: Adopt with changes (headless group; `type` splits `string` and `string[]`; `hiddenUntilFound` stays out). Radix: Adopt with changes (`render`, not `asChild`; a single accordion can close; no arrow-key roving after the APG update). shadcn: Adopt (CLI chevron and height var, demo on the docs page). MUI: Adopt with changes (one group value; no theme or density). | Saboteur: controlled-without-callback, disabled, and single close are tested. New Hire: public props stay on the `type` branch; context `value` matches that mode. A11y: trigger is a button with `aria-expanded` / `aria-controls`; closed `keepMounted` content is `inert`. Severity CLEAN. | Shipped |
 
 ---
 

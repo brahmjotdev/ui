@@ -19,6 +19,7 @@ type RegistryItem = string | RegistryParent;
 // ------------------------------------------------
 
 export const componentRegistry: RegistryItem[] = [
+  "Accordion",
   "Button",
   "Collapsible",
   "Scroll Area",

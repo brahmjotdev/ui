@@ -11,12 +11,12 @@
 
 ## Current / 0.x (in scope)
 
-| Group | Component   | Status     | Spec                               |
-| ----- | ----------- | ---------- | ---------------------------------- |
-| -     | Button      | Shipped    | [button.md](./button.md)           |
-| -     | Collapsible | Shipped    | [collapsible.md](./collapsible.md) |
-| -     | Scroll Area | Shipped    | [scroll-area.md](./scroll-area.md) |
-| -     | Accordion   | Spec Ready | [accordion.md](./accordion.md)     |
+| Group | Component   | Status  | Spec                               |
+| ----- | ----------- | ------- | ---------------------------------- |
+| -     | Button      | Shipped | [button.md](./button.md)           |
+| -     | Collapsible | Shipped | [collapsible.md](./collapsible.md) |
+| -     | Scroll Area | Shipped | [scroll-area.md](./scroll-area.md) |
+| -     | Accordion   | Shipped | [accordion.md](./accordion.md)     |
 
 **Shared utils (not catalog components):** e.g. `usePresence` at `src/package/ui/utils/use-presence.ts` — no per-util Spec MDs; see package source + tests.
 
