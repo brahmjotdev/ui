@@ -18,13 +18,14 @@ import { mergeProps, useRender } from "../../../utils";
 export function ScrollAreaContent({
   ref,
   render,
+  id,
   className,
   children,
   style,
   onScroll,
   ...props
 }: ScrollAreaContentProps) {
-  const state = useScrollAreaContentState(ref);
+  const state = useScrollAreaContentState(ref, id);
 
   return useRender({
     defaultTagName: "div",

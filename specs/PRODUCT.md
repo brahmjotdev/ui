@@ -12,7 +12,7 @@ Teams need a broad, accessible React component set that is headless by default a
 
 ## Versioning
 
-- **Current package:** `0.3.0` — Button, Collapsible, and Scroll Area (each headless + styled), docs, and agent rules. Not a major release.
+- **Current package:** `0.3.1` — Button, Collapsible, and Scroll Area (each headless + styled), docs, and agent rules. Not a major release.
 - **While building the catalog (0.x):** each shipped component or meaningful library change → **minor** bump (`0.4.0`, `0.5.0`, …). Patches for fixes within a slice.
 - **`1.0.0` only when:** the full component catalog in [INDEX.md](./components/INDEX.md) has package + CLI ready. That is the first major “ready” release.
 - Do not call the Button/Collapsible milestone v1 / 1.0 — that label is reserved for full-catalog readiness.

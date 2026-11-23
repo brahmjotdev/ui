@@ -4,18 +4,11 @@
 
 "use client";
 
-import {
-  useLayoutEffect,
-  type Ref,
-  type UIEvent,
-} from "react";
+import { useLayoutEffect, type Ref, type UIEvent } from "react";
 
 import { useScrollAreaContext } from "../context";
 import { scrollAreaContentAttrs } from "./attrs";
-import {
-  ensureNativeScrollbarHiddenStyles,
-  readScrollMetrics,
-} from "./utils";
+import { ensureNativeScrollbarHiddenStyles, readScrollMetrics } from "./utils";
 
 import { useMergeRefs } from "../../../utils";
 
@@ -23,10 +16,15 @@ import { useMergeRefs } from "../../../utils";
 // HOOKS
 // ------------------------------------------------
 
-function useScrollAreaContentState(ref?: Ref<HTMLElement>) {
+function useScrollAreaContentState(ref?: Ref<HTMLElement>, id?: string) {
   const ctx = useScrollAreaContext();
-  const { contentRef, setScrollMetrics } = ctx;
+  const { contentRef, setScrollMetrics, setContentId, autoContentId } = ctx;
+  const resolvedId = id ?? autoContentId;
   const mergedRef = useMergeRefs([ref, contentRef]);
+
+  useLayoutEffect(() => {
+    setContentId(resolvedId);
+  }, [resolvedId, setContentId]);
 
   useLayoutEffect(() => {
     ensureNativeScrollbarHiddenStyles();
@@ -44,9 +42,7 @@ function useScrollAreaContentState(ref?: Ref<HTMLElement>) {
     update();
 
     const resizeObserver =
-      typeof ResizeObserver === "undefined"
-        ? null
-        : new ResizeObserver(update);
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
     if (!resizeObserver) return undefined;
 
     resizeObserver.observe(element);
@@ -59,7 +55,7 @@ function useScrollAreaContentState(ref?: Ref<HTMLElement>) {
 
   return {
     ref: mergedRef,
-    id: ctx.contentId,
+    id: resolvedId,
     attrs: scrollAreaContentAttrs({
       overflowX: ctx.overflowX,
       overflowY: ctx.overflowY,

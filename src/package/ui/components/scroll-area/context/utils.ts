@@ -80,6 +80,59 @@ function pageScrollOn(
   scrollByAxis(element, "left", signed);
 }
 
+function horizontalRtl(orientation: ScrollAreaOrientation, dir: ScrollAreaDir) {
+  return orientation === "horizontal" && dir === "rtl";
+}
+
+function thumbTranslatePercent(
+  orientation: ScrollAreaOrientation,
+  scrollRatio: number,
+  thumbSize: number,
+  dir: ScrollAreaDir,
+) {
+  if (thumbSize <= 0 || thumbSize >= 1) return 0;
+  const travel = (1 / thumbSize - 1) * 100;
+  const fromStart = horizontalRtl(orientation, dir)
+    ? 1 - scrollRatio
+    : scrollRatio;
+  return fromStart * travel;
+}
+
+function dragScrollRatio(
+  startRatio: number,
+  deltaPx: number,
+  movable: number,
+  orientation: ScrollAreaOrientation,
+  dir: ScrollAreaDir,
+) {
+  const delta = deltaPx / Math.max(1, movable);
+  const towardEnd = horizontalRtl(orientation, dir) ? -delta : delta;
+  return startRatio + towardEnd;
+}
+
+function pageDirectionAt(
+  orientation: ScrollAreaOrientation,
+  dir: ScrollAreaDir,
+  offset: number,
+  trackSize: number,
+  scrollRatio: number,
+  thumbSize: number,
+): 1 | -1 | null {
+  const thumbPx = thumbSize * trackSize;
+  const movable = trackSize - thumbPx;
+  const fromTrackStart = horizontalRtl(orientation, dir)
+    ? (1 - scrollRatio) * movable
+    : scrollRatio * movable;
+
+  if (offset < fromTrackStart) {
+    return horizontalRtl(orientation, dir) ? 1 : -1;
+  }
+  if (offset > fromTrackStart + thumbPx) {
+    return horizontalRtl(orientation, dir) ? -1 : 1;
+  }
+  return null;
+}
+
 // ------------------------------------------------
 // VISIBILITY
 // ------------------------------------------------
@@ -131,9 +184,12 @@ function cornerShown(
 export {
   axisOverflow,
   cornerShown,
+  dragScrollRatio,
+  pageDirectionAt,
   pageScrollOn,
   pointerActive,
   scrollToRatioOn,
   scrollbarShown,
+  thumbTranslatePercent,
 };
 export type { ScrollbarAxes };
