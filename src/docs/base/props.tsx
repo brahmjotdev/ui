@@ -66,6 +66,22 @@ function withOverride(
   return override ? { ...prop, ...override, name: prop.name } : prop;
 }
 
+function overrideFor(
+  overrides: BasePropsOptions["overrides"],
+  key: SharedKey,
+): Partial<DocsAPIProp> | undefined {
+  return overrides?.[key];
+}
+
+function pushProp(
+  rows: DocsAPIProp[],
+  include: boolean,
+  prop: DocsAPIProp,
+  override?: Partial<DocsAPIProp>,
+) {
+  if (include) rows.push(withOverride(prop, override));
+}
+
 // ------------------------------------------------
 // TYPES
 // ------------------------------------------------
@@ -94,24 +110,15 @@ function baseProps({
   props = [],
   overrides,
 }: BasePropsOptions): DocsAPIProp[] {
-  const rows: DocsAPIProp[] = [withOverride(refProp, overrides?.ref)];
+  const rows: DocsAPIProp[] = [
+    withOverride(refProp, overrideFor(overrides, "ref")),
+  ];
 
-  if (render) {
-    rows.push(withOverride(renderProp, overrides?.render));
-  }
-
+  pushProp(rows, render, renderProp, overrideFor(overrides, "render"));
   rows.push(...props);
-
-  if (disabled) {
-    rows.push(withOverride(disabledProp, overrides?.disabled));
-  }
-  if (className) {
-    rows.push(withOverride(classNameProp, overrides?.className));
-  }
-  if (children) {
-    rows.push(withOverride(childrenProp, overrides?.children));
-  }
-
+  pushProp(rows, disabled, disabledProp, overrideFor(overrides, "disabled"));
+  pushProp(rows, className, classNameProp, overrideFor(overrides, "className"));
+  pushProp(rows, children, childrenProp, overrideFor(overrides, "children"));
   rows.push(restProps(tag));
 
   return rows;

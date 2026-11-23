@@ -15,12 +15,7 @@ import {
 import { ChevronDown } from "lucide-react";
 
 import { Collapsible } from "@/cli/components";
-import type {
-  DocsAPI,
-  DocsAPIA11y,
-  DocsAPIAttr,
-  DocsAPIProp,
-} from "../types";
+import type { DocsAPI, DocsAPIA11y, DocsAPIAttr, DocsAPIProp } from "../types";
 import { APIName, TypeTokens } from "./type-tokens";
 
 // ------------------------------------------------
@@ -113,8 +108,16 @@ function APIRowContent({ children }: { children: ReactNode }) {
 // DESCRIPTION BODY (attrs / a11y / cssVars)
 // ------------------------------------------------
 
+function isEmptyDescription(description: ReactNode): boolean {
+  return description == null || description === false || description === "";
+}
+
 function isTypeLikeDescription(value: string): boolean {
   return /["'|]/.test(value);
+}
+
+function isBlankText(part: ReactNode): boolean {
+  return typeof part === "string" && part.trim() === "";
 }
 
 function isFragmentNode(
@@ -123,32 +126,32 @@ function isFragmentNode(
   return isValidElement(node) && node.type === Fragment;
 }
 
+function renderString(description: string): ReactNode {
+  if (isTypeLikeDescription(description)) {
+    return <TypeTokens type={description} />;
+  }
+  return <APIDetail>{description}</APIDetail>;
+}
+
+function renderFragment(
+  description: ReactElement<{ children?: ReactNode }>,
+): ReactNode {
+  const parts = Children.toArray(description.props.children).filter(
+    (part) => !isBlankText(part),
+  );
+
+  if (parts.length === 0) return "—";
+  if (parts.length === 1) return renderDescription(parts[0]);
+
+  return parts.map((part, index) => (
+    <Fragment key={index}>{renderDescription(part)}</Fragment>
+  ));
+}
+
 function renderDescription(description: ReactNode): ReactNode {
-  if (description == null || description === false || description === "") {
-    return "—";
-  }
-
-  if (typeof description === "string") {
-    return isTypeLikeDescription(description) ? (
-      <TypeTokens type={description} />
-    ) : (
-      <APIDetail>{description}</APIDetail>
-    );
-  }
-
-  if (isFragmentNode(description)) {
-    const parts = Children.toArray(description.props.children).filter(
-      (part) => !(typeof part === "string" && part.trim() === ""),
-    );
-
-    if (parts.length === 0) return "—";
-    if (parts.length === 1) return renderDescription(parts[0]);
-
-    return parts.map((part, index) => (
-      <Fragment key={index}>{renderDescription(part)}</Fragment>
-    ));
-  }
-
+  if (isEmptyDescription(description)) return "—";
+  if (typeof description === "string") return renderString(description);
+  if (isFragmentNode(description)) return renderFragment(description);
   return <APIDetail>{description}</APIDetail>;
 }
 

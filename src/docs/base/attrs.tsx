@@ -102,67 +102,78 @@ function presenceAttrs(extra: DocsAPIAttr[] = []): DocsAPIAttr[] {
   ];
 }
 
+function identityAttr(
+  name: string,
+  value: string,
+  label: string,
+  override?: Partial<DocsAPIAttr>,
+): DocsAPIAttr {
+  return withOverride(
+    {
+      name,
+      description: (
+        <>
+          {`"${value}"`}
+          {label}
+        </>
+      ),
+    },
+    override,
+  );
+}
+
+function compoundAttrs({
+  component,
+  part,
+  attrs = [],
+  overrides,
+}: BaseAttrsCompoundOptions): DocsAPIAttr[] {
+  const partAttr = identityAttr(
+    `data-${component}-part`,
+    part,
+    "Part identity attribute.",
+    overrides?.part,
+  );
+
+  if (part !== "root") return [partAttr, ...attrs];
+
+  return [
+    identityAttr(
+      "data-slot",
+      component,
+      "Component identity attribute.",
+      overrides?.slot,
+    ),
+    partAttr,
+    ...attrs,
+  ];
+}
+
+function singleAttrs({
+  slot,
+  attrs = [],
+  overrides,
+}: BaseAttrsSingleOptions): DocsAPIAttr[] {
+  return [
+    identityAttr(
+      "data-slot",
+      slot,
+      "Component identity attribute.",
+      overrides?.slot,
+    ),
+    ...attrs,
+  ];
+}
+
 // ------------------------------------------------
 // BASE ATTRS
 // ------------------------------------------------
 
 function baseAttrs(options: BaseAttrsOptions): DocsAPIAttr[] {
   if ("component" in options && options.component) {
-    const { component, part, attrs = [], overrides } = options;
-    const rows: DocsAPIAttr[] = [];
-
-    if (part === "root") {
-      rows.push(
-        withOverride(
-          {
-            name: "data-slot",
-            description: (
-              <>
-                {`"${component}"`}
-                {"Component identity attribute."}
-              </>
-            ),
-          },
-          overrides?.slot,
-        ),
-      );
-    }
-
-    rows.push(
-      withOverride(
-        {
-          name: `data-${component}-part`,
-          description: (
-            <>
-              {`"${part}"`}
-              {"Part identity attribute."}
-            </>
-          ),
-        },
-        overrides?.part,
-      ),
-      ...attrs,
-    );
-
-    return rows;
+    return compoundAttrs(options);
   }
-
-  const { slot, attrs = [], overrides } = options as BaseAttrsSingleOptions;
-  return [
-    withOverride(
-      {
-        name: "data-slot",
-        description: (
-          <>
-            {`"${slot}"`}
-            {"Component identity attribute."}
-          </>
-        ),
-      },
-      overrides?.slot,
-    ),
-    ...attrs,
-  ];
+  return singleAttrs(options as BaseAttrsSingleOptions);
 }
 
 // ------------------------------------------------

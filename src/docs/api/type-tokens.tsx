@@ -99,26 +99,63 @@ function skipPlain(tokens: TypeToken[], index: number, step: 1 | -1): number {
   return i;
 }
 
+function asQualified(token: TypeToken): TypeToken {
+  return { ...token, kind: "qualified" };
+}
+
+function qualifyToken(
+  token: TypeToken,
+  inQualified: boolean,
+): { token: TypeToken; inQualified: boolean } {
+  if (token.kind === "identifier" && QUALIFIED_ROOTS.has(token.value)) {
+    return { token: asQualified(token), inQualified: true };
+  }
+
+  if (!inQualified) return { token, inQualified: false };
+  if (token.value === ".") return { token, inQualified: true };
+
+  if (token.kind === "identifier") {
+    return { token: asQualified(token), inQualified: true };
+  }
+
+  return { token, inQualified: false };
+}
+
 function markQualified(tokens: TypeToken[]): TypeToken[] {
   let inQualified = false;
 
   return tokens.map((token) => {
-    if (token.kind === "identifier" && QUALIFIED_ROOTS.has(token.value)) {
-      inQualified = true;
-      return { ...token, kind: "qualified" as const };
-    }
-
-    if (inQualified && token.value === ".") {
-      return token;
-    }
-
-    if (inQualified && token.kind === "identifier") {
-      return { ...token, kind: "qualified" as const };
-    }
-
-    inQualified = false;
-    return token;
+    const next = qualifyToken(token, inQualified);
+    inQualified = next.inQualified;
+    return next.token;
   });
+}
+
+function anglePaint(kind: TypeTokenKind): TypeTokenKind | null {
+  if (!ANGLE_INNER_KINDS.has(kind)) return null;
+  if (kind === "string") return "string";
+  return "keyword";
+}
+
+function isCloseAngle(tokens: TypeToken[], index: number): boolean {
+  return index < tokens.length && tokens[index].value === ">";
+}
+
+function paintAngleAt(tokens: TypeToken[], index: number) {
+  if (tokens[index].value !== "<") return;
+
+  const inner = skipPlain(tokens, index + 1, 1);
+  if (inner >= tokens.length) return;
+
+  const paint = anglePaint(tokens[inner].kind);
+  if (paint === null) return;
+
+  const close = skipPlain(tokens, inner + 1, 1);
+  if (!isCloseAngle(tokens, close)) return;
+
+  tokens[index] = { ...tokens[index], kind: paint };
+  tokens[inner] = { ...tokens[inner], kind: paint };
+  tokens[close] = { ...tokens[close], kind: paint };
 }
 
 /** Paint simple `<X>` args: brackets + inner share blue (string or keyword). */
@@ -126,20 +163,7 @@ function markAngleArgs(tokens: TypeToken[]): TypeToken[] {
   const next = cloneTokens(tokens);
 
   for (let i = 0; i < next.length; i++) {
-    if (next[i].value !== "<") continue;
-
-    const j = skipPlain(next, i + 1, 1);
-    if (j >= next.length || !ANGLE_INNER_KINDS.has(next[j].kind)) continue;
-
-    const k = skipPlain(next, j + 1, 1);
-    if (k >= next.length || next[k].value !== ">") continue;
-
-    const paint: TypeTokenKind =
-      next[j].kind === "string" ? "string" : "keyword";
-
-    next[i] = { ...next[i], kind: paint };
-    next[j] = { ...next[j], kind: paint };
-    next[k] = { ...next[k], kind: paint };
+    paintAngleAt(next, i);
   }
 
   return next;
@@ -235,9 +259,7 @@ function TypeTokens({ type }: { type: string }) {
 
 function APIName({ name }: { name: string }) {
   return (
-    <span data-api-name={isEventPropName(name) ? "event" : "prop"}>
-      {name}
-    </span>
+    <span data-api-name={isEventPropName(name) ? "event" : "prop"}>{name}</span>
   );
 }
 
