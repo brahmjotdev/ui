@@ -4,15 +4,7 @@
 
 "use client";
 
-import {
-  use,
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { use, useId, useLayoutEffect, useRef, useState } from "react";
 
 import { ScrollAreaContext } from "./context";
 import type {
@@ -22,6 +14,15 @@ import type {
   ScrollAreaProviderValueParams,
   ScrollMetrics,
 } from "./types";
+import {
+  axisOverflow,
+  cornerShown,
+  pageScrollOn,
+  pointerActive,
+  scrollToRatioOn,
+  scrollbarShown,
+  type ScrollbarAxes,
+} from "./utils";
 
 // ------------------------------------------------
 // CONSTANTS
@@ -40,6 +41,11 @@ const INITIAL_METRICS: ScrollMetrics = {
   thumbSizeY: 1,
 };
 
+const INITIAL_AXES: ScrollbarAxes = {
+  vertical: false,
+  horizontal: false,
+};
+
 // ------------------------------------------------
 // TYPES
 // ------------------------------------------------
@@ -53,33 +59,20 @@ interface ScrollAreaLatest {
 // HOOKS
 // ------------------------------------------------
 
-function useScrollAreaProviderValue({
-  type = "hover",
-  scrollHideDelay = 600,
-}: ScrollAreaProviderValueParams): ScrollAreaContextValue {
-  const contentId = useId();
-  const contentRef = useRef<HTMLElement | null>(null);
-  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [dir, setDirState] = useState<ScrollAreaDir>("ltr");
-  const [hovering, setHovering] = useState(false);
-  const [scrollbarHovering, setScrollbarHovering] = useState(false);
-  const [scrolling, setScrolling] = useState(false);
-  const [interacting, setInteracting] = useState(false);
-  const [metrics, setMetrics] = useState<ScrollMetrics>(INITIAL_METRICS);
-  const [scrollbarAxes, setScrollbarAxes] = useState({
-    vertical: false,
-    horizontal: false,
-  });
-
-  const latestRef = useRef<ScrollAreaLatest>({
-    scrollHideDelay,
-    dir,
-  });
+function useScrollLatest(scrollHideDelay: number, dir: ScrollAreaDir) {
+  const latestRef = useRef<ScrollAreaLatest>({ scrollHideDelay, dir });
 
   useLayoutEffect(() => {
     latestRef.current = { scrollHideDelay, dir };
   });
+
+  return latestRef;
+}
+
+function useScrollActivity(latestRef: { current: ScrollAreaLatest }) {
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [scrolling, setScrolling] = useState(false);
+  const [scrollbarHovering, setScrollbarHovering] = useState(false);
 
   const [api] = useState(() => {
     function clearHideTimer() {
@@ -112,120 +105,121 @@ function useScrollAreaProviderValue({
       notifyScroll();
     }
 
-    const setDir: Dispatch<SetStateAction<ScrollAreaDir>> = (value) => {
-      setDirState(value);
-    };
-
     return {
-      contentRef,
-      setDir,
-      setHovering,
-      setScrollbarHovering,
+      notifyScroll,
       onScrollbarPointerEnter,
       onScrollbarPointerLeave,
-      setInteracting,
-      notifyScroll,
-      setScrollMetrics: setMetrics,
-      registerScrollbar(orientation: ScrollAreaOrientation) {
-        setScrollbarAxes((prev) =>
-          prev[orientation] ? prev : { ...prev, [orientation]: true },
-        );
-      },
-      unregisterScrollbar(orientation: ScrollAreaOrientation) {
-        setScrollbarAxes((prev) =>
-          !prev[orientation] ? prev : { ...prev, [orientation]: false },
-        );
-      },
-      scrollToRatio(orientation: ScrollAreaOrientation, ratio: number) {
-        const element = contentRef.current;
-        if (!element) return;
-        const clamped = Math.min(1, Math.max(0, ratio));
-        if (orientation === "vertical") {
-          const max = element.scrollHeight - element.clientHeight;
-          element.scrollTop = clamped * max;
-        } else {
-          const max = element.scrollWidth - element.clientWidth;
-          const next = clamped * max;
-          element.scrollLeft =
-            latestRef.current.dir === "rtl" ? -next : next;
-        }
-        notifyScroll();
-      },
-      pageScroll(orientation: ScrollAreaOrientation, direction: 1 | -1) {
-        const element = contentRef.current;
-        if (!element) return;
-
-        if (orientation === "vertical") {
-          const delta = direction * element.clientHeight;
-          if (typeof element.scrollBy === "function") {
-            element.scrollBy({ top: delta });
-          } else {
-            element.scrollTop += delta;
-          }
-        } else {
-          const delta = direction * element.clientWidth;
-          const signed =
-            latestRef.current.dir === "rtl" ? -delta : delta;
-          if (typeof element.scrollBy === "function") {
-            element.scrollBy({ left: signed });
-          } else {
-            element.scrollLeft += signed;
-          }
-        }
-        notifyScroll();
-      },
     };
   });
 
-  function scrollbarVisible(orientation: ScrollAreaOrientation) {
-    const overflow =
-      orientation === "vertical" ? metrics.overflowY : metrics.overflowX;
-    if (!overflow) return false;
-    if (type === "always") return true;
-    if (type === "hover") {
-      return hovering || scrolling || interacting || scrollbarHovering;
-    }
-    return scrolling || interacting || scrollbarHovering;
-  }
+  return {
+    scrolling,
+    scrollbarHovering,
+    setScrollbarHovering,
+    ...api,
+  };
+}
+
+function useScrollbarAxes() {
+  const [axes, setAxes] = useState<ScrollbarAxes>(INITIAL_AXES);
+
+  const [api] = useState(() => ({
+    registerScrollbar(orientation: ScrollAreaOrientation) {
+      setAxes((prev) =>
+        prev[orientation] ? prev : { ...prev, [orientation]: true },
+      );
+    },
+    unregisterScrollbar(orientation: ScrollAreaOrientation) {
+      setAxes((prev) =>
+        prev[orientation] ? { ...prev, [orientation]: false } : prev,
+      );
+    },
+  }));
+
+  return { axes, ...api };
+}
+
+function useScrollCommands(
+  contentRef: { current: HTMLElement | null },
+  latestRef: { current: ScrollAreaLatest },
+  notifyScroll: () => void,
+) {
+  const [api] = useState(() => ({
+    scrollToRatio(orientation: ScrollAreaOrientation, ratio: number) {
+      const element = contentRef.current;
+      if (!element) return;
+      scrollToRatioOn(element, orientation, ratio, latestRef.current.dir);
+      notifyScroll();
+    },
+    pageScroll(orientation: ScrollAreaOrientation, direction: 1 | -1) {
+      const element = contentRef.current;
+      if (!element) return;
+      pageScrollOn(element, orientation, direction, latestRef.current.dir);
+      notifyScroll();
+    },
+  }));
+
+  return api;
+}
+
+function useScrollAreaProviderValue({
+  type = "hover",
+  scrollHideDelay = 600,
+}: ScrollAreaProviderValueParams): ScrollAreaContextValue {
+  const contentId = useId();
+  const contentRef = useRef<HTMLElement | null>(null);
+  const [dir, setDir] = useState<ScrollAreaDir>("ltr");
+  const [hovering, setHovering] = useState(false);
+  const [interacting, setInteracting] = useState(false);
+  const [metrics, setScrollMetrics] = useState<ScrollMetrics>(INITIAL_METRICS);
+
+  const latestRef = useScrollLatest(scrollHideDelay, dir);
+  const activity = useScrollActivity(latestRef);
+  const axes = useScrollbarAxes();
+  const commands = useScrollCommands(
+    contentRef,
+    latestRef,
+    activity.notifyScroll,
+  );
+
+  const active = pointerActive(
+    activity.scrolling,
+    interacting,
+    activity.scrollbarHovering,
+  );
+  const shown = scrollbarShown(type, hovering, active);
 
   return {
     type,
     scrollHideDelay,
     contentId,
-    contentRef: api.contentRef,
+    contentRef,
     dir,
-    setDir: api.setDir,
+    setDir,
     hovering,
-    setHovering: api.setHovering,
-    scrollbarHovering,
-    setScrollbarHovering: api.setScrollbarHovering,
-    onScrollbarPointerEnter: api.onScrollbarPointerEnter,
-    onScrollbarPointerLeave: api.onScrollbarPointerLeave,
-    scrolling,
+    setHovering,
+    scrollbarHovering: activity.scrollbarHovering,
+    setScrollbarHovering: activity.setScrollbarHovering,
+    onScrollbarPointerEnter: activity.onScrollbarPointerEnter,
+    onScrollbarPointerLeave: activity.onScrollbarPointerLeave,
+    scrolling: activity.scrolling,
     interacting,
-    setInteracting: api.setInteracting,
-    activityState: scrolling || interacting ? "scrolling" : "idle",
-    notifyScroll: api.notifyScroll,
+    setInteracting,
+    activityState: activity.scrolling || interacting ? "scrolling" : "idle",
+    notifyScroll: activity.notifyScroll,
     ...metrics,
-    setScrollMetrics: api.setScrollMetrics,
-    scrollbarVisible,
-    cornerVisible:
-      scrollbarAxes.vertical &&
-      scrollbarAxes.horizontal &&
-      metrics.overflowX &&
-      metrics.overflowY &&
-      (type === "always" ||
-        hovering ||
-        scrolling ||
-        interacting ||
-        scrollbarHovering),
-    registerScrollbar: api.registerScrollbar,
-    unregisterScrollbar: api.unregisterScrollbar,
-    hasScrollbar(orientation) {
-      return scrollbarAxes[orientation];
+    setScrollMetrics,
+    scrollbarVisible(orientation) {
+      return axisOverflow(metrics, orientation) && shown;
     },
-    scrollToRatio: api.scrollToRatio,
-    pageScroll: api.pageScroll,
+    cornerVisible: cornerShown(axes.axes, metrics, shown),
+    registerScrollbar: axes.registerScrollbar,
+    unregisterScrollbar: axes.unregisterScrollbar,
+    hasScrollbar(orientation) {
+      return axes.axes[orientation];
+    },
+    scrollToRatio: commands.scrollToRatio,
+    pageScroll: commands.pageScroll,
   };
 }
 
