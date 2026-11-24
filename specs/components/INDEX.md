@@ -16,6 +16,7 @@
 | -     | Button      | Shipped | [button.md](./button.md)           |
 | -     | Collapsible | Shipped | [collapsible.md](./collapsible.md) |
 | -     | Scroll Area | Shipped | [scroll-area.md](./scroll-area.md) |
+| -     | Accordion   | Shipped | [accordion.md](./accordion.md)     |
 
 **Shared utils (not catalog components):** e.g. `usePresence` at `src/package/ui/utils/use-presence.ts` — no per-util Spec MDs; see package source + tests.
 
@@ -63,7 +64,6 @@
 | Media    | Audio        | Not Started |                                           |
 | Media    | Image        | Not Started |                                           |
 | Media    | Video        | Not Started |                                           |
-| -        | Accordion    | Not Started |                                           |
 | -        | Alert        | Not Started |                                           |
 | -        | Avatar       | Not Started |                                           |
 | -        | Badge        | Not Started |                                           |
