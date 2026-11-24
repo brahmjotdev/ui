@@ -20,7 +20,7 @@ Skip `develop` and `release/*` while the package is unpublished `0.x`.
 ## What “ship” means
 
 - **Ship to the branch:** create the branch if needed and commit only that change’s files. The message follows `commit-messages`: a subject plus a body. Then push that branch to GitHub. Do not wait to be asked. The push is what generates the preview.
-- **Ship to `main`:** merge only after the user has seen that preview and confirmed it. A component also needs **Shipped** (rival + break recorded, tests passing) or a waiver in the MD. Shipped in the MD is not that confirmation. A later change to that component merges only after that change is tested and reviewed (`spec-first-workflow`) and the user confirms its preview. Then delete the branch. The merge contains that change’s files only.
+- **Ship to `main`:** merge only after the user has seen that preview and confirmed it. A component also needs **Shipped** (rival + break recorded, tests passing) or a waiver in the MD. Shipped in the MD is not that confirmation. A later change to that component merges only after that change is tested and reviewed (`spec-first-workflow`) and the user confirms its preview. Then delete the branch. The merge contains that change’s files only. The commit on `main` is `Ship …` or `Fix …`, with a body (`commit-messages`). Do not title it `Merge … into main`.
 - The next change to the same area is a new branch (`fix/button-focus-ring`). Leave the old branch deleted.
 
 ## Task switch

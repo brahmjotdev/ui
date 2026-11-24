@@ -11,6 +11,8 @@ Every commit that ships a change has a subject and a body. A subject-only messag
 
 One line. Imperative. Name the change that shipped.
 
+The commit that lands on `main` starts with `Ship` or `Fix`. Do not title it `Merge … into main`.
+
 ## Body
 
 A blank line after the subject, then what we did. Write the body every time, including a one-file change.
