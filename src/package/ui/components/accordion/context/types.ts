@@ -17,8 +17,8 @@ interface AccordionContextBase {
 }
 
 type AccordionContextValue =
-  | (AccordionContextBase & { type: "multiple"; value: string[] })
-  | (AccordionContextBase & { type: "single"; value: string });
+  | (AccordionContextBase & { type: "single"; value: string })
+  | (AccordionContextBase & { type: "multiple"; value: string[] });
 
 interface AccordionProviderProps {
   contextValue: AccordionContextValue;

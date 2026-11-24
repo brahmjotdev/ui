@@ -8,7 +8,7 @@ import { useDisclosureContext } from "../../internal/disclosure";
 import { useAccordionContext } from "../context";
 import { accordionItemAttrs } from "./attrs";
 
-import type { DisclosureContextValue } from "../../internal/disclosure";
+import type { AccordionItemContextValue } from "./types";
 
 // ------------------------------------------------
 // HOOKS
@@ -35,7 +35,7 @@ function useAccordionItem({
   };
 }
 
-function useAccordionItemContext(): DisclosureContextValue {
+function useAccordionItemContext(): AccordionItemContextValue {
   return useDisclosureContext();
 }
 
@@ -44,4 +44,3 @@ function useAccordionItemContext(): DisclosureContextValue {
 // ------------------------------------------------
 
 export { useAccordionItem, useAccordionItemContext };
-export type { DisclosureContextValue as AccordionItemContextValue };

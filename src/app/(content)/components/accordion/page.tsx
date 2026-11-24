@@ -18,7 +18,7 @@ export default function AccordionPage() {
     <Docs.Page>
       <Docs.Header
         title="Accordion"
-        description="A stack of sections. Several can stay open, or one can open at a time."
+        description="A stack of sections. One opens at a time, unless type is multiple."
       />
       <Docs.Body>
         <Docs.Section id="demo" title="Demo">

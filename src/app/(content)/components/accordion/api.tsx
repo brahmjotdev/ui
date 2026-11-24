@@ -25,28 +25,24 @@ const rootAPI: DocsAPI = {
       props: [
         {
           name: "type",
-          type: '"multiple" | "single"',
-          defaultValue: '"multiple"',
+          type: '"single" | "multiple"',
+          defaultValue: '"single"',
           description: (
             <p>
+              <code className="text-blue-500! dark:text-blue-400!">single</code>{" "}
+              keeps one item open. Opening another closes the previous one, and
+              the open item can close.{" "}
               <code className="text-blue-500! dark:text-blue-400!">
-                &quot;multiple&quot;
+                multiple
               </code>{" "}
-              uses a string list.{" "}
-              <code className="text-blue-500! dark:text-blue-400!">
-                &quot;single&quot;
-              </code>{" "}
-              uses one string, and{" "}
-              <code className="text-blue-500! dark:text-blue-400!">
-                &quot;&quot;
-              </code>{" "}
-              means closed.
+              lets several items stay open. Each trigger toggles only its own
+              item.
             </p>
           ),
         },
         {
           name: "value",
-          type: "string[] | string",
+          type: "string | string[]",
           description: (
             <p>
               Controlled open value. The type matches{" "}
@@ -63,30 +59,30 @@ const rootAPI: DocsAPI = {
         },
         {
           name: "defaultValue",
-          type: "string[] | string",
+          type: "string | string[]",
           description: (
             <p>
               Initial value when uncontrolled. Defaults to{" "}
-              <code className="text-blue-500! dark:text-blue-400!">[]</code> for
-              multiple and{" "}
               <code className="text-blue-500! dark:text-blue-400!">
                 &quot;&quot;
               </code>{" "}
-              for single.
+              for single and{" "}
+              <code className="text-blue-500! dark:text-blue-400!">[]</code> for
+              multiple.
             </p>
           ),
         },
         {
           name: "onValueChange",
-          type: "(value: string[] | string) => void",
+          type: "(value: string | string[]) => void",
           description: (
             <p>
               Called with the next open value. The argument is{" "}
+              <code className="text-blue-500! dark:text-blue-400!">string</code>{" "}
+              or{" "}
               <code className="text-blue-500! dark:text-blue-400!">
                 string[]
               </code>{" "}
-              or{" "}
-              <code className="text-blue-500! dark:text-blue-400!">string</code>{" "}
               based on{" "}
               <code className="text-orange-500! dark:text-orange-400!">
                 type
@@ -107,7 +103,7 @@ const rootAPI: DocsAPI = {
     attrs: [
       {
         name: "data-type",
-        description: '"multiple" | "single"',
+        description: '"single" | "multiple"',
       },
       disabledAttr,
     ],
@@ -125,9 +121,10 @@ const itemAPI: DocsAPI = {
         {
           name: "value",
           type: "string",
+          required: true,
           description: (
             <p>
-              Required id for this item. Must be unique in the accordion and
+              Required <code>id</code> for this item. Must be unique in the accordion and
               must not be an empty string.
             </p>
           ),

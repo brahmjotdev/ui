@@ -13,7 +13,6 @@ import {
   type AccordionTriggerProps as BaseAccordionTriggerProps,
 } from "@cerevialabs/ui/components";
 
-import { ChevronDown } from "lucide-react";
 import { cn } from "cn";
 
 import { Button } from "./button";
@@ -46,7 +45,10 @@ function AccordionRoot({ className, children, ...props }: AccordionRootProps) {
 
 function AccordionItem({ className, children, ...props }: AccordionItemProps) {
   return (
-    <BaseAccordion.Item {...props} className={cn("border-b", className)}>
+    <BaseAccordion.Item
+      {...props}
+      className={cn("border-b last:border-b-0", className)}
+    >
       {children}
     </BaseAccordion.Item>
   );
@@ -83,13 +85,9 @@ function AccordionTrigger({
       render={
         <Button
           variant="ghost"
-          className={cn("group w-full justify-between", className)}
+          className={cn("w-full justify-start text-left", className)}
         >
           {children}
-          <ChevronDown
-            aria-hidden
-            className="size-4 transition-transform duration-200 ease-in-out group-data-open:rotate-180"
-          />
         </Button>
       }
     />

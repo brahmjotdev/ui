@@ -37,7 +37,7 @@ function BasicAccordion(
 function ControlledMultiple() {
   const [value, setValue] = useState<string[]>([]);
   return (
-    <Accordion.Root value={value} onValueChange={setValue}>
+    <Accordion.Root type="multiple" value={value} onValueChange={setValue}>
       <Accordion.Item value="one">
         <Accordion.Trigger>One</Accordion.Trigger>
         <Accordion.Content>Panel one</Accordion.Content>
@@ -51,24 +51,48 @@ function ControlledMultiple() {
 // ------------------------------------------------
 
 describe("Accordion", () => {
-  it("defaults to multiple and toggles items independently", async () => {
+  it("defaults to single and closes the other item", async () => {
     const user = userEvent.setup();
     const { container } = render(<BasicAccordion />);
     const root = container.firstElementChild;
 
     expect(root).toHaveAttribute("data-slot", "accordion");
     expect(root).toHaveAttribute("data-accordion-part", "root");
-    expect(root).toHaveAttribute("data-type", "multiple");
+    expect(root).toHaveAttribute("data-type", "single");
     expect(screen.queryByText("Panel one")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "One" }));
+    await waitFor(() => {
+      expect(screen.getByText("Panel one")).toHaveAttribute(
+        "data-state",
+        "open",
+      );
+    });
+
+    await user.click(screen.getByRole("button", { name: "Two" }));
+    await waitFor(() => {
+      expect(screen.queryByText("Panel one")).not.toBeInTheDocument();
+      expect(screen.getByText("Panel two")).toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole("heading", { level: 3, name: "One" }),
+    ).toHaveAttribute("data-accordion-part", "header");
+  });
+
+  it("keeps items open independently when type is multiple", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<BasicAccordion type="multiple" />);
+
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-type",
+      "multiple",
+    );
 
     await user.click(screen.getByRole("button", { name: "One" }));
     await user.click(screen.getByRole("button", { name: "Two" }));
 
     expect(screen.getByText("Panel one")).toBeInTheDocument();
     expect(screen.getByText("Panel two")).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 3, name: "One" }),
-    ).toHaveAttribute("data-accordion-part", "header");
   });
 
   it("closes the open item in single mode and reports a string", async () => {
@@ -118,7 +142,7 @@ describe("Accordion", () => {
   it("does not change a controlled value without onValueChange", async () => {
     const user = userEvent.setup();
     render(
-      <Accordion.Root value={["one"]}>
+      <Accordion.Root value="one">
         <Accordion.Item value="one">
           <Accordion.Trigger>One</Accordion.Trigger>
           <Accordion.Content>Panel one</Accordion.Content>
@@ -182,7 +206,7 @@ describe("Accordion", () => {
   it("keeps closed content mounted and inert", async () => {
     const user = userEvent.setup();
     render(
-      <Accordion.Root defaultValue={["one"]}>
+      <Accordion.Root defaultValue="one">
         <Accordion.Item value="one">
           <Accordion.Trigger>One</Accordion.Trigger>
           <Accordion.Content keepMounted>Panel one</Accordion.Content>

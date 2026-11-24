@@ -58,9 +58,9 @@ Item context aliases Disclosure (`useAccordionItemContext`). Group context is se
 
 ## Behavior
 
-- **`type`:** `"multiple"` (default) or `"single"`. This is the public discriminant. There is no `exclusive` prop and no `string | string[]` value.
-  - **`multiple`:** `value` / `defaultValue` are `string[]`. `defaultValue` defaults to `[]`. Toggle adds or removes that item. `onValueChange(value: string[])`.
+- **`type`:** `"single"` (default) or `"multiple"`. This is the public discriminant. There is no `exclusive` prop and no `string | string[]` value.
   - **`single`:** `value` / `defaultValue` are `string`. `defaultValue` defaults to `""` (none open). Opening sets that item’s `value`. Closing the open item sets `""`. `onValueChange(value: string)`.
+  - **`multiple`:** `value` / `defaultValue` are `string[]`. `defaultValue` defaults to `[]`. Toggle adds or removes that item. `onValueChange(value: string[])`.
 - Several items may stay open only when `type` is `multiple`. A single accordion can still close its open item. Forcing one item to stay open is out of scope, so there is no `collapsible` prop.
 - Item `value` is a non-empty string. `""` is reserved for a closed single accordion.
 - The root may store a list internally. The public props and callback stay on the `type` branch. A single accordion does not accept or emit `string[]`.
@@ -83,32 +83,32 @@ Item context aliases Disclosure (`useAccordionItemContext`). Group context is se
 
 Shared on both modes: `ref`, `render`, `disabled` (default `false`), `className`, `children`, and other `div` attrs.
 
-`AccordionRootProps` is the union. `type` defaults to `"multiple"` when omitted.
+`AccordionRootProps` is the union. `type` defaults to `"single"` when omitted.
 
-| Mode     | Prop          | Type                      | Default      | Notes                           |
-| -------- | ------------- | ------------------------- | ------------ | ------------------------------- |
-| multiple | type          | `"multiple"`              | `"multiple"` | Optional on this branch         |
-| multiple | value         | string[]                  | —            | Controlled open list            |
-| multiple | defaultValue  | string[]                  | `[]`         | Uncontrolled                    |
-| multiple | onValueChange | (value: string[]) => void | —            |                                 |
-| single   | type          | `"single"`                | —            | Required literal                |
-| single   | value         | string                    | —            | Controlled. `""` means closed   |
-| single   | defaultValue  | string                    | `""`         | Uncontrolled. `""` means closed |
-| single   | onValueChange | (value: string) => void   | —            |                                 |
+| Mode     | Prop          | Type                      | Default    | Notes                           |
+| -------- | ------------- | ------------------------- | ---------- | ------------------------------- |
+| single   | type          | `"single"`                | `"single"` | Optional on this branch         |
+| single   | value         | string                    | —          | Controlled. `""` means closed   |
+| single   | defaultValue  | string                    | `""`       | Uncontrolled. `""` means closed |
+| single   | onValueChange | (value: string) => void   | —          |                                 |
+| multiple | type          | `"multiple"`              | —          | Required literal                |
+| multiple | value         | string[]                  | —          | Controlled open list            |
+| multiple | defaultValue  | string[]                  | `[]`       | Uncontrolled                    |
+| multiple | onValueChange | (value: string[]) => void | —          |                                 |
 
 ```ts
 type AccordionRootProps =
   | ({
-      type?: "multiple";
-      value?: string[];
-      defaultValue?: string[];
-      onValueChange?: (value: string[]) => void;
-    } & AccordionRootSharedProps)
-  | ({
-      type: "single";
+      type?: "single";
       value?: string;
       defaultValue?: string;
       onValueChange?: (value: string) => void;
+    } & AccordionRootSharedProps)
+  | ({
+      type: "multiple";
+      value?: string[];
+      defaultValue?: string[];
+      onValueChange?: (value: string[]) => void;
     } & AccordionRootSharedProps);
 ```
 
@@ -186,11 +186,11 @@ Disclosure still sets its own behavioral attrs on the item hosts. Accordion adds
 
 ## Headless vs CLI
 
-| Concern             | Headless     | CLI                                           |
-| ------------------- | ------------ | --------------------------------------------- |
-| Open state / a11y   | Yes          | Wrap parts                                    |
-| Chevron / animation | No           | Chevron on Trigger; height from the size vars |
-| Type default        | `"multiple"` | Demo stays `multiple`                         |
+| Concern             | Headless   | CLI                                                                                   |
+| ------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| Open state / a11y   | Yes        | Wrap parts                                                                            |
+| Chevron / animation | No         | Docs demo composes the chevron on Trigger. Content animates height from the size vars |
+| Type default        | `"single"` | Demo omits `type`                                                                     |
 
 No CLI variant or size props.
 
@@ -239,7 +239,7 @@ Checked 2026-11-23: [Base UI Accordion](https://base-ui.com/react/components/acc
 
 - `collapsible={false}` (Radix and Ark default). That forces one item to stay open. This spec lets a single accordion close.
 - Horizontal `orientation`, `dir`, and Arrow-key moves. Base UI no longer uses them for keyboard behavior. Layout direction is CSS and inherited `dir`.
-- A headless indicator part (Ark `ItemIndicator`). The chevron stays on the CLI.
+- A headless indicator part (Ark `ItemIndicator`). The chevron is not a headless part. The docs demo composes it on Trigger, same as Collapsible.
 - `onFocusChange`, `lazyMount` as a second mount API, and a MUI-style accordion that is only a single panel with its own `expanded`. Collapsible already covers one panel. Mount policy is `keepMounted` plus `usePresence`.
 
 **Nice-to-have, not in this build**
@@ -267,31 +267,31 @@ Checked 2026-11-23: [Base UI Accordion](https://base-ui.com/react/components/acc
 
 _(none)_
 
-Parked: `type` defaults to `"multiple"` (`string[]`); `type: "single"` uses `string` and `""` when closed; the last single item may close; Header is an optional `h3`; keyboard is Tab + Enter/Space; find-in-page for closed panels needs `keepMounted`.
+Parked: `type` defaults to `"single"` (`string`, `""` when closed); `type: "multiple"` uses `string[]`; the last single item may close; Header is an optional `h3`; keyboard is Tab + Enter/Space; find-in-page for closed panels needs `keepMounted`.
 
 ---
 
 ## Known limits / adversarial cases
 
-| Case                                                            | Status    | Test / Won’t-fix                                                                                                               |
-| --------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Closed content is absent from find-in-page unless `keepMounted` | Won’t-fix | Disclosure unmounts. `inert` while mounted closed. `hidden="until-found"` is out of scope (Safari still treats it as `hidden`) |
-| Duplicate item `value`                                          | Won’t-fix | Misuse. Those items share one open bit                                                                                         |
-| Single `value` / `defaultValue` of `""` means no item is open   | Document  | Item ids are non-empty. There is no separate closed sentinel                                                                   |
-| Changing `type` after mount                                     | Won’t-fix | The group list is created for the mode mounted first                                                                           |
-| Styled Trigger replaces `render`                                | Won’t-fix | The CLI trigger owns the chevron button                                                                                        |
-| Controlled value without `onValueChange` does not update        | Fixed     | `accordion.test.tsx`                                                                                                           |
-| Root or item `disabled` leaves an open panel in place           | Fixed     | `accordion.test.tsx`                                                                                                           |
-
-(Rival + break fill the rest at Completed.)
+| Case                                                             | Status    | Test / Won’t-fix                                                                                                               |
+| ---------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Closed content is absent from find-in-page unless `keepMounted`  | Won’t-fix | Disclosure unmounts. `inert` while mounted closed. `hidden="until-found"` is out of scope (Safari still treats it as `hidden`) |
+| Duplicate item `value`                                           | Won’t-fix | Misuse. Those items share one open bit                                                                                         |
+| Single `value` / `defaultValue` of `""` means no item is open    | Document  | Item ids are non-empty. There is no separate closed sentinel                                                                   |
+| Closed, unmounted content leaves `aria-controls` on a missing id | Won’t-fix | Content unmounts unless `keepMounted`. The trigger keeps the Disclosure id. `inert` covers the mounted-closed case             |
+| Changing `type` after mount                                      | Won’t-fix | The group list is created for the mode mounted first                                                                           |
+| Styled Trigger replaces `render`                                 | Won’t-fix | The CLI trigger owns the button. The docs demo passes the chevron as children                                                  |
+| Controlled value without `onValueChange` does not update         | Fixed     | `accordion.test.tsx`                                                                                                           |
+| Root or item `disabled` leaves an open panel in place            | Fixed     | `accordion.test.tsx`                                                                                                           |
 
 ---
 
 ## Review log
 
-| Date       | Rival                                                                                                                                                                                                                                                                                                                                                                              | Break                                                                                                                                                                                                                                                                                         | Verdict |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| 2026-11-23 | Base UI: Adopt with changes (headless group; `type` splits `string` and `string[]`; `hiddenUntilFound` stays out). Radix: Adopt with changes (`render`, not `asChild`; a single accordion can close; no arrow-key roving after the APG update). shadcn: Adopt (CLI chevron and height var, demo on the docs page). MUI: Adopt with changes (one group value; no theme or density). | Saboteur: controlled-without-callback, disabled, and single close are tested. New Hire: public props stay on the `type` branch; context `value` matches that mode. A11y: trigger is a button with `aria-expanded` / `aria-controls`; closed `keepMounted` content is `inert`. Severity CLEAN. | Shipped |
+| Date       | Rival                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Break                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Verdict |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 2026-11-23 | Base UI: Adopt with changes (headless group; `type` splits `string` and `string[]`; `hiddenUntilFound` stays out). Radix: Adopt with changes (`render`, not `asChild`; a single accordion can close; no arrow-key roving after the APG update). shadcn: Adopt (CLI chevron and height var, demo on the docs page). MUI: Adopt with changes (one group value; no theme or density).                                                                                                                                                                                                                                                                                               | Saboteur: controlled-without-callback, disabled, and single close are tested. New Hire: public props stay on the `type` branch; context `value` matches that mode. A11y: trigger is a button with `aria-expanded` / `aria-controls`; closed `keepMounted` content is `inert`. Severity CLEAN.                                                                                                                                                                                                                                                 | Shipped |
+| 2026-11-24 | Re-review after the default flipped to `"single"` and the chevron moved into the docs demo. Base UI: Adopt with changes (`multiple` defaults to false and `value` is always `Value[]`; this spec keeps the `type` split and `""` for a closed single accordion; `hiddenUntilFound` stays out). Radix: Adopt with changes (default `type` is `"single"`, matching Radix; a single accordion can still close; `render`, not `asChild`; no arrow-key roving). shadcn: Adopt with changes (height var stays on Content; the chevron is composed in the demo, same as Collapsible, not hardcoded in the CLI wrapper). MUI: Adopt with changes (one group value; no theme or density). | Saboteur: default single exclusivity, controlled `value="one"` without `onValueChange`, disabled, and close-to-`""` are tested. `setOpen(false)` on an already closed item does not call the group. New Hire: omitted `type` is the single branch; `multiple` requires the literal; context `value` matches that mode. A11y: trigger is a button with `aria-expanded` / `aria-controls`; closed `keepMounted` content is `inert`. An unmounted panel leaves `aria-controls` on a missing id — Won’t-fix, same unmount policy. Severity CLEAN. | Shipped |
 
 ---
 

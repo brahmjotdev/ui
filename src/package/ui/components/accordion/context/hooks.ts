@@ -28,7 +28,7 @@ import { useControllableState } from "../../../utils";
 function useAccordionProviderValue(
   props: AccordionProviderValueParams,
 ): AccordionContextValue {
-  const type: AccordionType = props.type === "single" ? "single" : "multiple";
+  const type: AccordionType = props.type === "multiple" ? "multiple" : "single";
   const disabled = props.disabled ?? false;
   const onValueChange = props.onValueChange;
 
